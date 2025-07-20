@@ -70,6 +70,7 @@ export function CurrencyConverter() {
 
   useEffect(() => {
     if (historicalDataResponse && Array.isArray(historicalDataResponse)) {
+      console.log('Setting historical data:', historicalDataResponse);
       setHistoricalData(historicalDataResponse);
     }
   }, [historicalDataResponse, setHistoricalData]);

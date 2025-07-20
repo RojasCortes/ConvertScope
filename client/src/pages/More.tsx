@@ -86,24 +86,24 @@ export function More() {
     {
       id: 'help',
       icon: HelpCircle,
-      title: t('more.support.title'),
-      description: t('more.support.description'),
+      title: 'Ayuda y Soporte',
+      description: 'Preguntas frecuentes y contacto',
       action: handleContactSupport,
       color: 'text-blue-500'
     },
     {
       id: 'rate',
       icon: Star,
-      title: t('settings.rate.title'),
-      description: t('more.rate.description'),
+      title: 'Calificar en Play Store',
+      description: 'Danos tu opinión en la tienda',
       action: handleRateApp,
       color: 'text-yellow-500'
     },
     {
       id: 'donate',
       icon: Coffee,
-      title: t('more.donate.title'),
-      description: t('more.donate.description'),
+      title: 'Apoyar Desarrollo',
+      description: 'Ayuda a mantener la app gratuita',
       action: handleDonation,
       color: 'text-red-500'
     }
@@ -153,7 +153,7 @@ export function More() {
       {/* Support Section */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          {t('more.support.section')}
+          Soporte y Comunidad
         </h3>
         <div className="space-y-3">
           {supportOptions.map((option) => (

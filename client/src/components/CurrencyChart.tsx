@@ -18,7 +18,19 @@ export function CurrencyChart({ baseCurrency, targetCurrency, period }: Currency
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!chartRef.current || !historicalData.length) return;
+    if (!chartRef.current) return;
+    
+    // Debug log
+    console.log('Historical data:', historicalData);
+    
+    if (!historicalData || historicalData.length === 0) {
+      // Show empty state
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy();
+        chartInstanceRef.current = null;
+      }
+      return;
+    }
 
     // Destroy existing chart
     if (chartInstanceRef.current) {
