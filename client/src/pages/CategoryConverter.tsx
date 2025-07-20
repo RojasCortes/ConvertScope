@@ -214,34 +214,42 @@ export function CategoryConverter() {
                 <Button
                   variant={isFavorited ? "default" : "outline"}
                   size="sm"
-                  onClick={() => {
-                    if (isFavorited) {
-                      // Remove from favorites
-                      const favoriteToRemove = favoritesData?.find((fav: any) => 
-                        fav.fromUnit === fromUnit && fav.toUnit === toUnit && fav.category === currentCategory
-                      );
-                      if (favoriteToRemove) {
-                        fetch(`/api/favorites/${favoriteToRemove.id}`, {
-                          method: 'DELETE',
-                        }).then(() => {
-                          queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+                  onClick={async () => {
+                    try {
+                      if (isFavorited) {
+                        // Remove from favorites
+                        const favoriteToRemove = favoritesData?.find((fav: any) => 
+                          fav.fromUnit === fromUnit && fav.toUnit === toUnit && fav.category === currentCategory
+                        );
+                        if (favoriteToRemove) {
+                          await fetch(`/api/favorites/${favoriteToRemove.id}`, {
+                            method: 'DELETE',
+                          });
+                          await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
                           alert('Removido de favoritos');
-                        });
+                        }
+                      } else {
+                        // Check if already exists to prevent duplicates
+                        const exists = Array.isArray(favoritesData) && favoritesData.some((fav: any) => 
+                          fav.fromUnit === fromUnit && fav.toUnit === toUnit && fav.category === currentCategory
+                        );
+                        
+                        if (!exists) {
+                          await fetch('/api/favorites', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              fromUnit: fromUnit,
+                              toUnit: toUnit,
+                              category: currentCategory
+                            }),
+                          });
+                          await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+                          alert('Agregado a favoritos');
+                        }
                       }
-                    } else {
-                      // Add to favorites
-                      fetch('/api/favorites', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                          fromUnit: fromUnit,
-                          toUnit: toUnit,
-                          category: currentCategory
-                        }),
-                      }).then(() => {
-                        queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
-                        alert('Agregado a favoritos');
-                      });
+                    } catch (error) {
+                      console.error('Error updating favorites:', error);
                     }
                   }}
                   className="flex items-center space-x-2"
