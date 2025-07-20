@@ -78,8 +78,10 @@ export function CurrencyConverter() {
 
   useEffect(() => {
     if (historicalDataResponse && Array.isArray(historicalDataResponse)) {
-      console.log('Setting historical data:', historicalDataResponse);
+      console.log('Setting historical data in store:', historicalDataResponse);
       setHistoricalData(historicalDataResponse);
+    } else if (historicalDataResponse) {
+      console.log('Historical data response is not array:', historicalDataResponse);
     }
   }, [historicalDataResponse, setHistoricalData]);
 
@@ -366,7 +368,8 @@ export function CurrencyConverter() {
             <CurrencyChart 
               baseCurrency={fromCurrency} 
               targetCurrency={toCurrency} 
-              period={period} 
+              period={period}
+              data={historicalDataResponse}
             />
 
             <TechnicalIndicators 

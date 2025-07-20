@@ -9,19 +9,21 @@ interface CurrencyChartProps {
   baseCurrency: string;
   targetCurrency: string;
   period: string;
+  data?: any[];
 }
 
-export function CurrencyChart({ baseCurrency, targetCurrency, period }: CurrencyChartProps) {
+export function CurrencyChart({ baseCurrency, targetCurrency, period, data }: CurrencyChartProps) {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<Chart | null>(null);
-  const { historicalData } = useConverterStore();
+  const { historicalData: storeHistoricalData } = useConverterStore();
+  const historicalData = data || storeHistoricalData;
   const { t } = useTranslation();
 
   useEffect(() => {
     if (!chartRef.current) return;
     
     // Debug log
-    console.log('Historical data:', historicalData);
+    console.log('CurrencyChart - Historical data received:', historicalData, 'Length:', historicalData?.length);
     
     if (!historicalData || historicalData.length === 0) {
       // Show empty state
@@ -40,10 +42,13 @@ export function CurrencyChart({ baseCurrency, targetCurrency, period }: Currency
     const ctx = chartRef.current.getContext('2d');
     if (!ctx) return;
 
-    const labels = historicalData.map(item => 
-      new Date(item.date).toLocaleDateString()
-    );
+    const labels = historicalData.map(item => {
+      console.log('Processing data item:', item);
+      return new Date(item.date).toLocaleDateString();
+    });
     const data = historicalData.map(item => parseFloat(item.rate));
+    
+    console.log('Chart data prepared - Labels:', labels, 'Data:', data);
 
     const config: ChartConfiguration = {
       type: 'line',
