@@ -106,7 +106,7 @@ export function CurrencyChart({ baseCurrency, targetCurrency, period, data }: Cu
         chartInstanceRef.current.destroy();
       }
     };
-  }, [historicalData, baseCurrency, targetCurrency]);
+  }, [historicalData, baseCurrency, targetCurrency, data]);
 
   // Show loading or empty state if no data
   if (!historicalData || historicalData.length === 0) {
@@ -118,7 +118,7 @@ export function CurrencyChart({ baseCurrency, targetCurrency, period, data }: Cu
             Loading chart for {baseCurrency}/{targetCurrency}...
           </p>
           <p className="text-xs text-gray-400 mt-1">
-            Data length: {historicalData?.length || 0}
+            Data: {JSON.stringify(data?.slice(0,2))} | Store: {historicalData?.length || 0}
           </p>
         </div>
       </div>

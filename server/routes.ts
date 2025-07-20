@@ -73,7 +73,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // For demo purposes, generate mock historical data
       // In production, use a real API like Alpha Vantage or similar
-      const days = period === "1w" ? 7 : period === "1m" ? 30 : period === "1y" ? 365 : 7;
+      const days = period === "7d" ? 7 : period === "1w" ? 7 : period === "1m" ? 30 : period === "1y" ? 365 : period === "5y" ? 1825 : 7;
       const currentRate = await storage.getCurrencyRate(base, target);
       const baseRate = currentRate ? parseFloat(currentRate.rate) : 1;
       
@@ -92,6 +92,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
+      console.log(`Sending historical data for ${base}/${target} (${period}):`, historicalData.length, 'items');
       res.json(historicalData);
     } catch (error) {
       console.error("Historical data error:", error);

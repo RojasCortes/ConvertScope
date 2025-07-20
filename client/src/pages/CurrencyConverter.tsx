@@ -24,7 +24,7 @@ export function CurrencyConverter() {
     swapCurrencies, convertCurrency
   } = useConverterStore();
   const { t } = useTranslation();
-  const [period, setPeriod] = useState('1w');
+  const [period, setPeriod] = useState('7d');
   const queryClient = useQueryClient();
 
   // Fetch exchange rates
@@ -351,7 +351,7 @@ export function CurrencyConverter() {
               </h3>
               
               <div className="flex bg-gray-100 dark:bg-gray-900 rounded-lg p-1">
-                {['1w', '1m', '1y', '5y'].map((p) => (
+                {['7d', '1m', '1y', '5y'].map((p) => (
                   <Button
                     key={p}
                     variant={period === p ? "default" : "ghost"}
