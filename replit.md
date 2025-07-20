@@ -1,0 +1,107 @@
+# ConvertScope - Universal Converter
+
+## Overview
+
+ConvertScope is a Progressive Web Application (PWA) built as a universal converter for currencies, measurements, and various units. The application provides real-time currency conversion with exchange rates, unit conversions for length, weight, temperature, and more, along with user favorites and conversion history functionality.
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+## System Architecture
+
+### Frontend Architecture
+- **Framework**: React with TypeScript
+- **UI Library**: Radix UI components with custom styling
+- **Styling**: Tailwind CSS with CSS custom properties for theming
+- **State Management**: Zustand for global state management
+- **Data Fetching**: TanStack Query (React Query) for server state management
+- **Routing**: Wouter for lightweight client-side routing
+- **PWA Features**: Service worker for offline functionality and app installation
+
+### Backend Architecture
+- **Runtime**: Node.js with Express.js
+- **API Pattern**: RESTful API with TypeScript
+- **Development**: Vite for development server and hot module replacement
+- **Build System**: ESBuild for production builds
+
+### Data Storage Solutions
+- **ORM**: Drizzle ORM for type-safe database operations
+- **Database**: PostgreSQL (configured for Neon serverless)
+- **Fallback Storage**: In-memory storage implementation for development
+- **Session Management**: PostgreSQL session store with connect-pg-simple
+
+## Key Components
+
+### Frontend Components
+1. **Layout System**: Header with navigation, bottom navigation bar, and responsive design
+2. **Converter Components**: Specialized converters for currencies and general units
+3. **UI Components**: Comprehensive component library based on Radix UI primitives
+4. **PWA Components**: Service worker registration, offline support, and install prompts
+5. **Internationalization**: Multi-language support (Spanish/English) with custom translation hook
+
+### Backend Components
+1. **API Routes**: Currency exchange rates, conversion history, and favorites management
+2. **Storage Layer**: Abstracted storage interface with PostgreSQL and in-memory implementations
+3. **External Integrations**: Exchange rate API integration with caching mechanism
+4. **Error Handling**: Centralized error handling with proper HTTP status codes
+
+### Database Schema
+- **Users**: User account management
+- **Conversions**: Conversion history tracking
+- **Favorites**: User favorite conversion pairs
+- **Currency Rates**: Cached exchange rate data
+
+## Data Flow
+
+1. **Client Requests**: Frontend makes API calls using TanStack Query
+2. **API Processing**: Express routes handle requests and interact with storage layer
+3. **Data Persistence**: Drizzle ORM manages database operations
+4. **Cache Management**: Exchange rates cached for 5 minutes, with fallback to stored rates
+5. **Real-time Updates**: Query invalidation ensures fresh data after mutations
+6. **Offline Support**: Service worker caches static assets and API responses
+
+## External Dependencies
+
+### Core Dependencies
+- **@neondatabase/serverless**: Serverless PostgreSQL database connection
+- **drizzle-orm**: Type-safe ORM for database operations
+- **@tanstack/react-query**: Server state management and caching
+- **axios**: HTTP client for external API calls
+- **chart.js**: Charting library for currency historical data
+
+### UI Dependencies
+- **@radix-ui/\***: Accessible UI component primitives
+- **tailwindcss**: Utility-first CSS framework
+- **lucide-react**: Icon library
+- **class-variance-authority**: Type-safe variant management for components
+
+### Development Dependencies
+- **vite**: Build tool and development server
+- **typescript**: Type safety across the application
+- **tsx**: TypeScript execution for server-side development
+
+## Deployment Strategy
+
+### Build Process
+1. **Frontend Build**: Vite builds React application to `dist/public`
+2. **Backend Build**: ESBuild bundles server code to `dist/index.js`
+3. **Database Setup**: Drizzle migrations handle schema updates
+
+### Environment Configuration
+- **Development**: Uses Vite dev server with Express backend
+- **Production**: Serves static files from Express with API routes
+- **Database**: Requires `DATABASE_URL` environment variable for PostgreSQL connection
+- **Exchange API**: Optional `EXCHANGE_API_KEY` for enhanced rate limits
+
+### Replit-Specific Features
+- **Hot Reloading**: Vite integration with Replit's development environment
+- **Error Overlay**: Runtime error modal for development
+- **Cartographer Plugin**: Replit-specific development tooling
+
+### PWA Deployment
+- **Service Worker**: Caches static assets and API responses for offline functionality
+- **Web App Manifest**: Configures app metadata for installation
+- **Responsive Design**: Mobile-first approach with touch-friendly interfaces
+
+The application follows a modern full-stack architecture with strong TypeScript support, comprehensive error handling, and PWA capabilities for enhanced user experience across devices.
