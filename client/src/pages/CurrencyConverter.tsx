@@ -50,13 +50,13 @@ export function CurrencyConverter() {
   });
 
   useEffect(() => {
-    if (ratesData?.rates) {
-      setExchangeRates(ratesData.rates);
+    if (ratesData && typeof ratesData === 'object' && ratesData !== null && 'rates' in ratesData) {
+      setExchangeRates(ratesData.rates as Record<string, number>);
     }
   }, [ratesData, setExchangeRates]);
 
   useEffect(() => {
-    if (historicalDataResponse) {
+    if (historicalDataResponse && Array.isArray(historicalDataResponse)) {
       setHistoricalData(historicalDataResponse);
     }
   }, [historicalDataResponse, setHistoricalData]);
@@ -223,6 +223,39 @@ export function CurrencyConverter() {
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 {t('currency.lastUpdate')}: {ratesLoading ? t('common.loading') : t('currency.timeAgo')}
+              </div>
+              
+              {/* Add to Favorites Button */}
+              <div className="mt-3 flex justify-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    // Add favorite functionality
+                    const saveFavoriteMutation = {
+                      mutate: (data: any) => {
+                        return fetch('/api/favorites', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify(data),
+                        }).then(() => {
+                          queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+                          alert('Agregado a favoritos');
+                        });
+                      }
+                    };
+                    
+                    saveFavoriteMutation.mutate({
+                      fromUnit: fromCurrency,
+                      toUnit: toCurrency,
+                      category: 'currency'
+                    });
+                  }}
+                  className="flex items-center space-x-2"
+                >
+                  <span>⭐</span>
+                  <span>Agregar a Favoritos</span>
+                </Button>
               </div>
             </div>
           </CardContent>

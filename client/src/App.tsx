@@ -11,6 +11,7 @@ import { CurrencyConverter } from '@/pages/CurrencyConverter';
 import { CategoryConverter } from '@/pages/CategoryConverter';
 import { Favorites } from '@/pages/Favorites';
 import { Settings } from '@/pages/Settings';
+import { More } from '@/pages/More';
 import NotFound from '@/pages/not-found';
 import { registerServiceWorker } from '@/lib/pwa';
 
@@ -27,6 +28,8 @@ function AppRoutes() {
         return <CategoryConverter />;
       case 'favorites':
         return <Favorites />;
+      case 'more':
+        return <More />;
       case 'settings':
         return <Settings />;
       default:

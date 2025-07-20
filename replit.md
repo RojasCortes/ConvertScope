@@ -8,6 +8,15 @@ ConvertScope is a Progressive Web Application (PWA) built as a universal convert
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (January 2025)
+
+✓ Fixed dark mode implementation - now properly toggles theme classes
+✓ Added "More" section with additional features and app information  
+✓ Added favorite buttons to currency and category converters
+✓ Hidden notifications setting (not essential for current version)
+✓ Corrected TypeScript type errors in components
+✓ Improved bottom navigation with proper view routing
+
 ## System Architecture
 
 ### Frontend Architecture

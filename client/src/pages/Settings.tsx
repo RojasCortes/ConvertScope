@@ -83,25 +83,27 @@ export function Settings() {
           </CardContent>
         </Card>
 
-        {/* Notifications */}
-        <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <Bell className="text-blue-500 text-xl" />
-                <div>
-                  <h3 className="font-medium text-gray-900 dark:text-white">
-                    {t('settings.notifications.title')}
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {t('settings.notifications.description')}
-                  </p>
+        {/* Notifications - Hidden for now */}
+        {false && (
+          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Bell className="text-blue-500 text-xl" />
+                  <div>
+                    <h3 className="font-medium text-gray-900 dark:text-white">
+                      {t('settings.notifications.title')}
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {t('settings.notifications.description')}
+                    </p>
+                  </div>
                 </div>
+                <Switch defaultChecked />
               </div>
-              <Switch defaultChecked />
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
 
         {/* About */}
         <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">

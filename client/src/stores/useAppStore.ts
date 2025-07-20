@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 interface AppState {
   theme: 'light' | 'dark';
   language: 'es' | 'en';
-  currentView: 'home' | 'currency' | 'category' | 'favorites' | 'settings';
+  currentView: 'home' | 'currency' | 'category' | 'favorites' | 'settings' | 'more';
   currentCategory: string;
   isSearchOpen: boolean;
   searchQuery: string;

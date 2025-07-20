@@ -195,9 +195,41 @@ export function CategoryConverter() {
 
             {/* Conversion Formula */}
             <div className="mt-4 p-4 bg-gray-50 dark:bg-dark-bg rounded-lg">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                 <span className="font-medium">{t('converter.formula')}:</span> {getConversionFormula()}
               </p>
+              
+              {/* Add to Favorites Button */}
+              <div className="flex justify-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const saveFavoriteMutation = {
+                      mutate: (data: any) => {
+                        return fetch('/api/favorites', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify(data),
+                        }).then(() => {
+                          queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+                          alert('Agregado a favoritos');
+                        });
+                      }
+                    };
+                    
+                    saveFavoriteMutation.mutate({
+                      fromUnit: fromUnit,
+                      toUnit: toUnit,
+                      category: currentCategory
+                    });
+                  }}
+                  className="flex items-center space-x-2"
+                >
+                  <span>⭐</span>
+                  <span>Agregar a Favoritos</span>
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

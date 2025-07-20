@@ -44,7 +44,7 @@ export function Favorites() {
         ⭐ {t('nav.favorites')}
       </h2>
       
-      {favorites.length > 0 ? (
+      {Array.isArray(favorites) && favorites.length > 0 ? (
         <div className="space-y-4">
           {favorites.map((favorite: any) => {
             const category = categories.find(c => c.id === favorite.category);
