@@ -85,13 +85,7 @@ export function Layout({ children }: LayoutProps) {
       {/* Bottom Navigation */}
       <BottomNavigation />
 
-      {/* Floating Action Button */}
-      <Button
-        className="fixed bottom-20 right-4 w-14 h-14 bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-30"
-        size="icon"
-      >
-        <span className="text-xl">+</span>
-      </Button>
+
     </div>
   );
 }

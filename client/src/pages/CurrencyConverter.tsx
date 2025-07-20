@@ -24,7 +24,7 @@ export function CurrencyConverter() {
     swapCurrencies, convertCurrency
   } = useConverterStore();
   const { t } = useTranslation();
-  const [period, setPeriod] = useState('7d');
+  const [period, setPeriod] = useState('1w');
   const queryClient = useQueryClient();
 
   // Fetch exchange rates
@@ -34,9 +34,17 @@ export function CurrencyConverter() {
   });
 
   // Fetch historical data
-  const { data: historicalDataResponse } = useQuery({
+  const { data: historicalDataResponse, isLoading: isHistoricalLoading, error: historicalError } = useQuery({
     queryKey: ['/api/currency-history', fromCurrency, toCurrency, period],
     enabled: !!(fromCurrency && toCurrency),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    queryFn: async () => {
+      const response = await fetch(`/api/currency-history/${fromCurrency}/${toCurrency}/${period}`);
+      if (!response.ok) throw new Error('Failed to fetch historical data');
+      const data = await response.json();
+      console.log('Fetched historical data for chart:', data);
+      return data;
+    }
   });
 
   // Fetch favorites to check status
