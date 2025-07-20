@@ -119,9 +119,30 @@ export const translations = {
       share: {
         title: 'Compartir App',
         text: 'Descubre ConvertScope, el convertidor universal más completo',
+        copied: 'Link copiado al portapapeles',
       },
       rate: {
         title: 'Calificar en Play Store',
+      },
+    },
+    more: {
+      title: 'Más',
+      comingSoon: 'Función próximamente disponible',
+      calculator: {
+        title: 'Calculadora Avanzada',
+        description: 'Calculadora científica integrada',
+      },
+      history: {
+        title: 'Historial Completo',
+        description: 'Ver todas las conversiones realizadas',
+      },
+      offline: {
+        title: 'Modo Offline',
+        description: 'Usar sin conexión a internet',
+        available: '¡Ya disponible! Prueba sin conexión.',
+      },
+      donation: {
+        thanks: '¡Gracias por tu apoyo! Esta función estará disponible pronto.',
       },
     },
     ads: {
@@ -248,9 +269,30 @@ export const translations = {
       share: {
         title: 'Share App',
         text: 'Discover ConvertScope, the most complete universal converter',
+        copied: 'Link copied to clipboard',
       },
       rate: {
         title: 'Rate on Play Store',
+      },
+    },
+    more: {
+      title: 'More',
+      comingSoon: 'Feature coming soon',
+      calculator: {
+        title: 'Advanced Calculator',
+        description: 'Integrated scientific calculator',
+      },
+      history: {
+        title: 'Full History',
+        description: 'View all performed conversions',
+      },
+      offline: {
+        title: 'Offline Mode',
+        description: 'Use without internet connection',
+        available: 'Already available! Try offline.',
+      },
+      donation: {
+        thanks: 'Thank you for your support! This feature will be available soon.',
       },
     },
     ads: {

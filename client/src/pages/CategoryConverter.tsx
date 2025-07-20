@@ -229,8 +229,8 @@ export function CategoryConverter() {
                           alert('Removido de favoritos');
                         }
                       } else {
-                        // Add to favorites - the duplicate check is already done by isFavorited
-                        await fetch('/api/favorites', {
+                        // Add to favorites
+                        const response = await fetch('/api/favorites', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({
@@ -239,8 +239,13 @@ export function CategoryConverter() {
                             category: currentCategory
                           }),
                         });
-                        await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
-                        alert('Agregado a favoritos');
+                        
+                        if (response.ok) {
+                          await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+                          alert('Agregado a favoritos');
+                        } else if (response.status === 409) {
+                          alert('Ya está en favoritos');
+                        }
                       }
                     } catch (error) {
                       console.error('Error updating favorites:', error);

@@ -49,10 +49,7 @@ export function CurrencyConverter() {
     fav.fromUnit === fromCurrency && fav.toUnit === toCurrency && fav.category === 'currency'
   );
 
-  // Debug: log the state
-  console.log('Current currencies:', fromCurrency, 'to', toCurrency);
-  console.log('Favorites data:', favoritesData);
-  console.log('Is favorited?', isFavorited);
+
 
 
 
@@ -261,8 +258,8 @@ export function CurrencyConverter() {
                           alert('Removido de favoritos');
                         }
                       } else {
-                        // Add to favorites - the duplicate check is already done by isFavorited
-                        await fetch('/api/favorites', {
+                        // Add to favorites
+                        const response = await fetch('/api/favorites', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({
@@ -271,8 +268,13 @@ export function CurrencyConverter() {
                             category: 'currency'
                           }),
                         });
-                        await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
-                        alert('Agregado a favoritos');
+                        
+                        if (response.ok) {
+                          await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+                          alert('Agregado a favoritos');
+                        } else if (response.status === 409) {
+                          alert('Ya está en favoritos');
+                        }
                       }
                     } catch (error) {
                       console.error('Error updating favorites:', error);

@@ -127,6 +127,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/favorites", async (req, res) => {
     try {
       const favorite = insertFavoriteSchema.parse(req.body);
+      
+      // Check for existing favorite to prevent duplicates
+      const existingFavorites = await storage.getFavorites();
+      const exists = existingFavorites.some(fav => 
+        fav.fromUnit === favorite.fromUnit && 
+        fav.toUnit === favorite.toUnit && 
+        fav.category === favorite.category
+      );
+      
+      if (exists) {
+        return res.status(409).json({ error: "Favorite already exists" });
+      }
+      
       const saved = await storage.addFavorite(favorite);
       res.json(saved);
     } catch (error) {

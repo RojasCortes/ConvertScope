@@ -28,7 +28,7 @@ export function More() {
       // Fallback for browsers that don't support Web Share API
       const url = window.location.href;
       navigator.clipboard.writeText(url);
-      alert('Link copiado al portapapeles');
+      alert(t('settings.share.copied'));
     }
   };
 
@@ -44,32 +44,32 @@ export function More() {
 
   const handleDonation = () => {
     // In a real app, this would open a donation platform
-    alert('¡Gracias por tu apoyo! Esta función estará disponible pronto.');
+    alert(t('more.donation.thanks'));
   };
 
   const moreOptions = [
     {
       id: 'calculator',
       icon: Calculator,
-      title: 'Calculadora Avanzada',
-      description: 'Calculadora científica integrada',
-      action: () => alert('Función próximamente disponible'),
+      title: t('more.calculator.title'),
+      description: t('more.calculator.description'),
+      action: () => alert(t('more.comingSoon')),
       color: 'text-blue-500'
     },
     {
       id: 'history',
       icon: History,
-      title: 'Historial Completo',
-      description: 'Ver todas las conversiones realizadas',
-      action: () => alert('Función próximamente disponible'),
+      title: t('more.history.title'),
+      description: t('more.history.description'),
+      action: () => alert(t('more.comingSoon')),
       color: 'text-green-500'
     },
     {
       id: 'offline',
       icon: Download,
-      title: 'Modo Offline',
-      description: 'Usar sin conexión a internet',
-      action: () => alert('¡Ya disponible! Prueba sin conexión.'),
+      title: t('more.offline.title'),
+      description: t('more.offline.description'),
+      action: () => alert(t('more.offline.available')),
       color: 'text-purple-500'
     },
     {
