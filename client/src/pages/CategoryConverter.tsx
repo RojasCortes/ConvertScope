@@ -229,24 +229,18 @@ export function CategoryConverter() {
                           alert('Removido de favoritos');
                         }
                       } else {
-                        // Check if already exists to prevent duplicates
-                        const exists = Array.isArray(favoritesData) && favoritesData.some((fav: any) => 
-                          fav.fromUnit === fromUnit && fav.toUnit === toUnit && fav.category === currentCategory
-                        );
-                        
-                        if (!exists) {
-                          await fetch('/api/favorites', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              fromUnit: fromUnit,
-                              toUnit: toUnit,
-                              category: currentCategory
-                            }),
-                          });
-                          await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
-                          alert('Agregado a favoritos');
-                        }
+                        // Add to favorites - the duplicate check is already done by isFavorited
+                        await fetch('/api/favorites', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            fromUnit: fromUnit,
+                            toUnit: toUnit,
+                            category: currentCategory
+                          }),
+                        });
+                        await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+                        alert('Agregado a favoritos');
                       }
                     } catch (error) {
                       console.error('Error updating favorites:', error);
