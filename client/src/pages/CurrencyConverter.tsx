@@ -40,6 +40,16 @@ export function CurrencyConverter() {
   });
 
   // Save conversion mutation
+  // Fetch favorites to check status
+  const { data: favoritesData } = useQuery({
+    queryKey: ['/api/favorites'],
+  });
+
+  // Check if current pair is favorited
+  const isFavorited = Array.isArray(favoritesData) && favoritesData.some((fav: any) => 
+    fav.fromUnit === fromCurrency && fav.toUnit === toCurrency && fav.category === 'currency'
+  );
+
   const saveConversionMutation = useMutation({
     mutationFn: async (conversionData: any) => {
       return apiRequest('POST', '/api/conversions', conversionData);
@@ -228,33 +238,42 @@ export function CurrencyConverter() {
               {/* Add to Favorites Button */}
               <div className="mt-3 flex justify-center">
                 <Button
-                  variant="outline"
+                  variant={isFavorited ? "default" : "outline"}
                   size="sm"
                   onClick={() => {
-                    // Add favorite functionality
-                    const saveFavoriteMutation = {
-                      mutate: (data: any) => {
-                        return fetch('/api/favorites', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify(data),
+                    if (isFavorited) {
+                      // Remove from favorites
+                      const favoriteToRemove = favoritesData?.find((fav: any) => 
+                        fav.fromUnit === fromCurrency && fav.toUnit === toCurrency && fav.category === 'currency'
+                      );
+                      if (favoriteToRemove) {
+                        fetch(`/api/favorites/${favoriteToRemove.id}`, {
+                          method: 'DELETE',
                         }).then(() => {
                           queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
-                          alert('Agregado a favoritos');
+                          alert('Removido de favoritos');
                         });
                       }
-                    };
-                    
-                    saveFavoriteMutation.mutate({
-                      fromUnit: fromCurrency,
-                      toUnit: toCurrency,
-                      category: 'currency'
-                    });
+                    } else {
+                      // Add to favorites
+                      fetch('/api/favorites', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          fromUnit: fromCurrency,
+                          toUnit: toCurrency,
+                          category: 'currency'
+                        }),
+                      }).then(() => {
+                        queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+                        alert('Agregado a favoritos');
+                      });
+                    }
                   }}
                   className="flex items-center space-x-2"
                 >
-                  <span>⭐</span>
-                  <span>Agregar a Favoritos</span>
+                  <span>{isFavorited ? '⭐' : '☆'}</span>
+                  <span>{isFavorited ? 'En Favoritos' : 'Agregar a Favoritos'}</span>
                 </Button>
               </div>
             </div>

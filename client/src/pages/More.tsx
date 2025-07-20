@@ -102,14 +102,7 @@ export function More() {
       action: handleRateApp,
       color: 'text-yellow-500'
     },
-    {
-      id: 'github',
-      icon: Github,
-      title: 'Código Abierto',
-      description: 'Contribuye al desarrollo',
-      action: handleViewGithub,
-      color: 'text-gray-600'
-    },
+
     {
       id: 'donate',
       icon: Coffee,

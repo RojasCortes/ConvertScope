@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { useAppStore } from '@/stores/useAppStore';
 import { useConverterStore } from '@/stores/useConverterStore';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -22,6 +22,16 @@ export function CategoryConverter() {
   const queryClient = useQueryClient();
 
   const [quickReferenceData, setQuickReferenceData] = useState<any[]>([]);
+
+  // Fetch favorites to check status
+  const { data: favoritesData } = useQuery({
+    queryKey: ['/api/favorites'],
+  });
+
+  // Check if current pair is favorited
+  const isFavorited = Array.isArray(favoritesData) && favoritesData.some((fav: any) => 
+    fav.fromUnit === fromUnit && fav.toUnit === toUnit && fav.category === currentCategory
+  );
 
   const category = categories.find(c => c.id === currentCategory);
   const units = getUnitsForCategory(currentCategory);
@@ -202,32 +212,42 @@ export function CategoryConverter() {
               {/* Add to Favorites Button */}
               <div className="flex justify-center">
                 <Button
-                  variant="outline"
+                  variant={isFavorited ? "default" : "outline"}
                   size="sm"
                   onClick={() => {
-                    const saveFavoriteMutation = {
-                      mutate: (data: any) => {
-                        return fetch('/api/favorites', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify(data),
+                    if (isFavorited) {
+                      // Remove from favorites
+                      const favoriteToRemove = favoritesData?.find((fav: any) => 
+                        fav.fromUnit === fromUnit && fav.toUnit === toUnit && fav.category === currentCategory
+                      );
+                      if (favoriteToRemove) {
+                        fetch(`/api/favorites/${favoriteToRemove.id}`, {
+                          method: 'DELETE',
                         }).then(() => {
                           queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
-                          alert('Agregado a favoritos');
+                          alert('Removido de favoritos');
                         });
                       }
-                    };
-                    
-                    saveFavoriteMutation.mutate({
-                      fromUnit: fromUnit,
-                      toUnit: toUnit,
-                      category: currentCategory
-                    });
+                    } else {
+                      // Add to favorites
+                      fetch('/api/favorites', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          fromUnit: fromUnit,
+                          toUnit: toUnit,
+                          category: currentCategory
+                        }),
+                      }).then(() => {
+                        queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+                        alert('Agregado a favoritos');
+                      });
+                    }
                   }}
                   className="flex items-center space-x-2"
                 >
-                  <span>⭐</span>
-                  <span>Agregar a Favoritos</span>
+                  <span>{isFavorited ? '⭐' : '☆'}</span>
+                  <span>{isFavorited ? 'En Favoritos' : 'Agregar a Favoritos'}</span>
                 </Button>
               </div>
             </div>
