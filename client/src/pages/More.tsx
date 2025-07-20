@@ -75,8 +75,8 @@ export function More() {
     {
       id: 'share',
       icon: Share2,
-      title: 'Compartir App',
-      description: 'Recomienda ConvertScope a tus amigos',
+      title: t('settings.share.title'),
+      description: t('settings.share.text'),
       action: handleShareApp,
       color: 'text-orange-500'
     }
@@ -86,24 +86,24 @@ export function More() {
     {
       id: 'help',
       icon: HelpCircle,
-      title: 'Ayuda y Soporte',
-      description: 'Preguntas frecuentes y contacto',
+      title: t('more.support.title'),
+      description: t('more.support.description'),
       action: handleContactSupport,
       color: 'text-blue-500'
     },
     {
       id: 'rate',
       icon: Star,
-      title: 'Calificar App',
-      description: 'Danos tu opinión en la tienda',
+      title: t('settings.rate.title'),
+      description: t('more.rate.description'),
       action: handleRateApp,
       color: 'text-yellow-500'
     },
     {
       id: 'donate',
       icon: Coffee,
-      title: 'Apoyar Desarrollo',
-      description: 'Ayuda a mantener la app gratuita',
+      title: t('more.donate.title'),
+      description: t('more.donate.description'),
       action: handleDonation,
       color: 'text-red-500'
     }
@@ -118,7 +118,7 @@ export function More() {
       {/* Features Section */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Funciones Adicionales
+          {t('more.features')}
         </h3>
         <div className="space-y-3">
           {moreOptions.map((option) => (
@@ -153,7 +153,7 @@ export function More() {
       {/* Support Section */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Soporte y Comunidad
+          {t('more.support.section')}
         </h3>
         <div className="space-y-3">
           {supportOptions.map((option) => (
@@ -190,7 +190,7 @@ export function More() {
             ConvertScope v1.0.0
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            El convertidor universal más completo y gratuito
+            {t('settings.about.description')}
           </p>
           <div className="flex flex-wrap gap-2 justify-center">
             <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded-full">

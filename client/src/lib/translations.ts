@@ -114,7 +114,7 @@ export const translations = {
       about: {
         title: 'Acerca de ConvertScope',
         version: 'Versión',
-        description: 'Convertidor universal gratuito',
+        description: 'El convertidor universal más completo y gratuito',
       },
       share: {
         title: 'Compartir App',
@@ -143,6 +143,19 @@ export const translations = {
       },
       donation: {
         thanks: '¡Gracias por tu apoyo! Esta función estará disponible pronto.',
+      },
+      features: 'Funciones Adicionales',
+      support: {
+        section: 'Soporte y Comunidad',
+        title: 'Ayuda y Soporte',
+        description: 'Preguntas frecuentes y contacto',
+      },
+      rate: {
+        description: 'Danos tu opinión en la tienda',
+      },
+      donate: {
+        title: 'Apoyar Desarrollo',
+        description: 'Ayuda a mantener la app gratuita',
       },
     },
     ads: {
@@ -264,7 +277,7 @@ export const translations = {
       about: {
         title: 'About ConvertScope',
         version: 'Version',
-        description: 'Free universal converter',
+        description: 'The most complete and free universal converter',
       },
       share: {
         title: 'Share App',
@@ -293,6 +306,19 @@ export const translations = {
       },
       donation: {
         thanks: 'Thank you for your support! This feature will be available soon.',
+      },
+      features: 'Additional Features',
+      support: {
+        section: 'Support & Community',
+        title: 'Help & Support',
+        description: 'Frequently asked questions and contact',
+      },
+      rate: {
+        description: 'Give us your opinion in the store',
+      },
+      donate: {
+        title: 'Support Development',
+        description: 'Help keep the app free',
       },
     },
     ads: {
