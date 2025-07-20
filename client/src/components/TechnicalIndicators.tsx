@@ -20,15 +20,15 @@ export function TechnicalIndicators({ rsi, sma, volatility }: TechnicalIndicator
 
   return (
     <div className="mt-4 grid grid-cols-3 gap-4">
-      <div className="text-center p-3 bg-gray-50 dark:bg-dark-bg rounded-lg">
+      <div className="text-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
         <p className="text-xs text-gray-500 dark:text-gray-400">RSI</p>
         <p className="font-semibold text-gray-900 dark:text-white">{rsi.toFixed(1)}</p>
       </div>
-      <div className="text-center p-3 bg-gray-50 dark:bg-dark-bg rounded-lg">
+      <div className="text-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
         <p className="text-xs text-gray-500 dark:text-gray-400">SMA(20)</p>
         <p className="font-semibold text-gray-900 dark:text-white">{sma.toFixed(4)}</p>
       </div>
-      <div className="text-center p-3 bg-gray-50 dark:bg-dark-bg rounded-lg">
+      <div className="text-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
         <p className="text-xs text-gray-500 dark:text-gray-400">{t('currency.volatility')}</p>
         <p className={`font-semibold ${getVolatilityColor(volatility)}`}>{volatility}</p>
       </div>

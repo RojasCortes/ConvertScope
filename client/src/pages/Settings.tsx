@@ -33,7 +33,7 @@ export function Settings() {
       
       <div className="space-y-4">
         {/* Language Setting */}
-        <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+        <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -61,7 +61,7 @@ export function Settings() {
         </Card>
 
         {/* Theme Setting */}
-        <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+        <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -85,7 +85,7 @@ export function Settings() {
 
         {/* Notifications - Hidden for now */}
         {false && (
-          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
@@ -106,7 +106,7 @@ export function Settings() {
         )}
 
         {/* About */}
-        <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+        <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
           <CardContent className="p-6">
             <div className="flex items-center space-x-3">
               <Info className="text-blue-500 text-xl" />

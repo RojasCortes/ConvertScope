@@ -31,9 +31,9 @@ export function Layout({ children }: LayoutProps) {
   }, [theme]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-dark-bg transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Header */}
-      <header className="bg-white dark:bg-dark-surface shadow-sm sticky top-0 z-50 transition-colors duration-300">
+      <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50 transition-colors duration-300">
         <div className="px-4 py-3 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="text-2xl">🔄</div>
@@ -49,7 +49,7 @@ export function Layout({ children }: LayoutProps) {
               variant="ghost"
               size="icon"
               onClick={() => setSearchOpen(true)}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-card transition-colors"
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               <Search className="h-5 w-5" />
             </Button>

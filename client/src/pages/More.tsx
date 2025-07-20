@@ -102,7 +102,6 @@ export function More() {
       action: handleRateApp,
       color: 'text-yellow-500'
     },
-
     {
       id: 'donate',
       icon: Coffee,
@@ -126,7 +125,7 @@ export function More() {
         </h3>
         <div className="space-y-3">
           {moreOptions.map((option) => (
-            <Card key={option.id} className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+            <Card key={option.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
               <CardContent className="p-4">
                 <button 
                   onClick={option.action}
@@ -161,7 +160,7 @@ export function More() {
         </h3>
         <div className="space-y-3">
           {supportOptions.map((option) => (
-            <Card key={option.id} className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+            <Card key={option.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
               <CardContent className="p-4">
                 <button 
                   onClick={option.action}

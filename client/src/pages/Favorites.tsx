@@ -49,7 +49,7 @@ export function Favorites() {
           {favorites.map((favorite: any) => {
             const category = categories.find(c => c.id === favorite.category);
             return (
-              <Card key={favorite.id} className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+              <Card key={favorite.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">

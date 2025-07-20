@@ -13,7 +13,7 @@ export function LanguageToggle() {
       variant="ghost"
       size="sm"
       onClick={toggleLanguage}
-      className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-card transition-colors"
+      className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
     >
       <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
         {language.toUpperCase()}

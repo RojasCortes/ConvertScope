@@ -39,7 +39,6 @@ export function CurrencyConverter() {
     enabled: !!(fromCurrency && toCurrency),
   });
 
-  // Save conversion mutation
   // Fetch favorites to check status
   const { data: favoritesData } = useQuery({
     queryKey: ['/api/favorites'],
@@ -158,7 +157,7 @@ export function CurrencyConverter() {
 
       {/* Quick Converter */}
       <div className="px-4 pb-4">
-        <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+        <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
           <CardContent className="p-6">
             <div className="grid grid-cols-1 gap-4">
               {/* From Currency */}
@@ -215,14 +214,14 @@ export function CurrencyConverter() {
                     ))}
                   </SelectContent>
                 </Select>
-                <div className="w-full mt-2 px-4 py-3 bg-gray-50 dark:bg-dark-bg border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-lg font-semibold">
+                <div className="w-full mt-2 px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-lg font-semibold">
                   {convertedCurrencyAmount.toFixed(2)}
                 </div>
               </div>
             </div>
 
             {/* Exchange Rate Info */}
-            <div className="mt-4 p-4 bg-gray-50 dark:bg-dark-bg rounded-lg">
+            <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">
                   1 {fromCurrency} = {currentRate.toFixed(4)} {toCurrency}
@@ -286,7 +285,7 @@ export function CurrencyConverter() {
 
       {/* Currency Strength Index */}
       <div className="px-4 pb-4">
-        <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+        <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               <BarChart3 className="inline-block text-blue-500 mr-2" />
@@ -295,7 +294,7 @@ export function CurrencyConverter() {
             
             <div className="space-y-3">
               {topCurrencies.map((currency) => (
-                <div key={currency?.code} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-dark-bg rounded-lg">
+                <div key={currency?.code} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <span className="text-lg">{currency?.flag}</span>
                     <div>
@@ -321,7 +320,7 @@ export function CurrencyConverter() {
 
       {/* Historical Chart */}
       <div className="px-4 pb-4">
-        <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+        <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -329,7 +328,7 @@ export function CurrencyConverter() {
                 {t('currency.historicalChart')}
               </h3>
               
-              <div className="flex bg-gray-100 dark:bg-dark-bg rounded-lg p-1">
+              <div className="flex bg-gray-100 dark:bg-gray-900 rounded-lg p-1">
                 {['1w', '1m', '1y', '5y'].map((p) => (
                   <Button
                     key={p}
@@ -361,7 +360,7 @@ export function CurrencyConverter() {
 
       {/* Predictions */}
       <div className="px-4 pb-4">
-        <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+        <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               <Gem className="inline-block text-blue-500 mr-2" />

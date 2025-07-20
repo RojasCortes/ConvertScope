@@ -37,7 +37,7 @@ export function Home() {
           <Input
             type="text"
             placeholder={t('search.globalPlaceholder')}
-            className="w-full px-4 py-3 pl-12 bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white transition-colors"
+            className="w-full px-4 py-3 pl-12 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white transition-colors"
           />
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
         </div>
@@ -57,7 +57,7 @@ export function Home() {
             <button
               key={category.id}
               onClick={() => handleCategoryClick(category.id)}
-              className="category-card bg-white dark:bg-dark-surface p-6 rounded-xl shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:scale-105"
+              className="category-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:scale-105"
             >
               <div className="text-4xl mb-3">{category.emoji}</div>
               <h3 className="font-semibold text-gray-900 dark:text-white">
@@ -93,7 +93,7 @@ export function Home() {
         <div className="space-y-3">
           {recentConversions.length > 0 ? (
             recentConversions.map((conversion: any) => (
-              <Card key={conversion.id} className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+              <Card key={conversion.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">

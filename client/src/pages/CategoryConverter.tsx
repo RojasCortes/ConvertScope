@@ -140,7 +140,7 @@ export function CategoryConverter() {
 
       {/* Simple Converter */}
       <div className="px-4 pb-4">
-        <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+        <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
           <CardContent className="p-6">
             <div className="grid grid-cols-1 gap-4">
               {/* From Unit */}
@@ -197,14 +197,14 @@ export function CategoryConverter() {
                     ))}
                   </SelectContent>
                 </Select>
-                <div className="w-full mt-2 px-4 py-3 bg-gray-50 dark:bg-dark-bg border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-lg font-semibold">
+                <div className="w-full mt-2 px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-lg font-semibold">
                   {toValue.toFixed(6)}
                 </div>
               </div>
             </div>
 
             {/* Conversion Formula */}
-            <div className="mt-4 p-4 bg-gray-50 dark:bg-dark-bg rounded-lg">
+            <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                 <span className="font-medium">{t('converter.formula')}:</span> {getConversionFormula()}
               </p>
@@ -257,7 +257,7 @@ export function CategoryConverter() {
 
       {/* Quick Reference Table */}
       <div className="px-4 pb-4">
-        <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700">
+        <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               {t('converter.quickReference')}
