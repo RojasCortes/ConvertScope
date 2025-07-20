@@ -1,4 +1,5 @@
 import { useTranslation } from '@/hooks/useTranslation';
+import { useAppStore } from '@/stores/useAppStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AdSpace } from '@/components/AdSpace';
@@ -15,6 +16,7 @@ import {
 } from 'lucide-react';
 
 export function More() {
+  const { language } = useAppStore();
   const { t } = useTranslation();
 
   const handleShareApp = () => {
@@ -86,24 +88,24 @@ export function More() {
     {
       id: 'help',
       icon: HelpCircle,
-      title: 'Ayuda y Soporte',
-      description: 'Preguntas frecuentes y contacto',
+      title: language === 'en' ? 'Help & Support' : 'Ayuda y Soporte',
+      description: language === 'en' ? 'Frequently asked questions and contact' : 'Preguntas frecuentes y contacto',
       action: handleContactSupport,
       color: 'text-blue-500'
     },
     {
       id: 'rate',
       icon: Star,
-      title: 'Calificar en Play Store',
-      description: 'Danos tu opinión en la tienda',
+      title: language === 'en' ? 'Rate on Play Store' : 'Calificar en Play Store',
+      description: language === 'en' ? 'Give us your opinion in the store' : 'Danos tu opinión en la tienda',
       action: handleRateApp,
       color: 'text-yellow-500'
     },
     {
       id: 'donate',
       icon: Coffee,
-      title: 'Apoyar Desarrollo',
-      description: 'Ayuda a mantener la app gratuita',
+      title: language === 'en' ? 'Support Development' : 'Apoyar Desarrollo',
+      description: language === 'en' ? 'Help keep the app free' : 'Ayuda a mantener la app gratuita',
       action: handleDonation,
       color: 'text-red-500'
     }
@@ -153,7 +155,7 @@ export function More() {
       {/* Support Section */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Soporte y Comunidad
+          {language === 'en' ? 'Support & Community' : 'Soporte y Comunidad'}
         </h3>
         <div className="space-y-3">
           {supportOptions.map((option) => (
