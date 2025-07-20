@@ -11,7 +11,6 @@ import {
   Star,
   ExternalLink,
   Coffee,
-  Github,
   Mail
 } from 'lucide-react';
 
@@ -41,9 +40,7 @@ export function More() {
     window.open('mailto:support@convertscope.com', '_blank');
   };
 
-  const handleViewGithub = () => {
-    window.open('https://github.com/convertscope', '_blank');
-  };
+
 
   const handleDonation = () => {
     // In a real app, this would open a donation platform

@@ -49,6 +49,11 @@ export function CurrencyConverter() {
     fav.fromUnit === fromCurrency && fav.toUnit === toCurrency && fav.category === 'currency'
   );
 
+  // Debug log
+  console.log('Favorites data:', favoritesData);
+  console.log('Current pair:', fromCurrency, 'to', toCurrency);
+  console.log('Is favorited:', isFavorited);
+
   const saveConversionMutation = useMutation({
     mutationFn: async (conversionData: any) => {
       return apiRequest('POST', '/api/conversions', conversionData);
