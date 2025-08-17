@@ -7,6 +7,7 @@ ConvertScope is a Progressive Web Application (PWA) built as a universal convert
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Project documentation: User requested comprehensive architecture diagram and technology stack information - documented in ARQUITECTURA_TECNOLOGIAS.md
 
 ## Recent Changes (January 2025)
 
