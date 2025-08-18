@@ -1,14 +1,30 @@
-// client/src/lib/api.ts - CORREGIDO
-import { CapacitorHttp, HttpOptions, HttpResponse } from '@capacitor/core';
+// client/src/lib/api.ts - CON FALLBACK A FETCH
 import { Capacitor } from '@capacitor/core';
 
-// Detectar si estamos en nativo o web
-const isNative = Capacitor.isNativePlatform();
+// ✅ IMPORTACIÓN SEGURA DE CapacitorHttp
+let CapacitorHttp: any = null;
+try {
+  CapacitorHttp = require('@capacitor/core').CapacitorHttp;
+} catch (e) {
+  console.log('CapacitorHttp not available, using fetch fallback');
+}
 
-// URL base según el entorno
+// Detección de plataforma
+const isNative = Capacitor.isNativePlatform();
+const isAndroid = Capacitor.getPlatform() === 'android';
+
+// URL base
 export const API_BASE_URL = isNative 
-  ? 'https://convert-scope.vercel.app/api'  // URL completa para Android
-  : '/api';  // URL relativa para web
+  ? 'https://convert-scope.vercel.app/api'
+  : '/api';
+
+// Debug info
+console.log('🔍 Platform Detection:');
+console.log('- isNative:', isNative);
+console.log('- isAndroid:', isAndroid);
+console.log('- Platform:', Capacitor.getPlatform());
+console.log('- API_BASE_URL:', API_BASE_URL);
+console.log('- CapacitorHttp available:', !!CapacitorHttp);
 
 export interface ExchangeRatesResponse {
   base: string;
@@ -61,7 +77,7 @@ export class ApiError extends Error {
   }
 }
 
-// Función helper para hacer requests que funciona en web y nativo
+// ✅ FUNCIÓN CON FALLBACK INTELIGENTE
 async function makeRequest<T>(url: string, options: {
   method?: 'GET' | 'POST' | 'DELETE';
   body?: any;
@@ -75,26 +91,33 @@ async function makeRequest<T>(url: string, options: {
     ...headers
   };
 
-  console.log(`${isNative ? 'Native' : 'Web'} ${method} request to: ${url}`);
+  console.log(`🌐 API Request [${isNative ? 'NATIVE' : 'WEB'}]:`, {
+    method,
+    url,
+    platform: Capacitor.getPlatform(),
+    useCapacitorHttp: !!(isNative && CapacitorHttp)
+  });
   
   try {
-    if (isNative) {
-      // Usar CapacitorHttp en Android/iOS
-      const httpOptions: HttpOptions = {
+    // ✅ USAR CapacitorHttp SOLO SI ESTÁ DISPONIBLE Y ESTAMOS EN NATIVO
+    if (isNative && CapacitorHttp) {
+      const httpOptions = {
         url,
         method,
         headers: defaultHeaders,
         connectTimeout: 15000,
-        readTimeout: 20000
+        readTimeout: 20000,
+        ...(body && method !== 'GET' && { data: body })
       };
 
-      if (body && method !== 'GET') {
-        httpOptions.data = body;
-      }
-
-      const response: HttpResponse = await CapacitorHttp.request(httpOptions);
+      console.log('📱 Using CapacitorHttp with options:', httpOptions);
       
-      console.log(`Native response status: ${response.status}`);
+      const response = await CapacitorHttp.request(httpOptions);
+      
+      console.log(`📱 CapacitorHttp Response:`, {
+        status: response.status,
+        url: response.url
+      });
       
       if (response.status >= 400) {
         throw new ApiError(response.status, `HTTP ${response.status}: ${response.data?.error || 'Request failed'}`);
@@ -102,7 +125,7 @@ async function makeRequest<T>(url: string, options: {
 
       return response.data;
     } else {
-      // Usar fetch en web
+      // ✅ FALLBACK A FETCH (funciona en Android también)
       const fetchOptions: RequestInit = {
         method,
         headers: defaultHeaders,
@@ -114,9 +137,15 @@ async function makeRequest<T>(url: string, options: {
         fetchOptions.body = JSON.stringify(body);
       }
 
+      console.log(`🌐 Using fetch fallback:`, { url, method });
+
       const response = await fetch(url, fetchOptions);
       
-      console.log(`Web response status: ${response.status}`);
+      console.log(`🌐 Fetch Response:`, {
+        status: response.status,
+        url: response.url,
+        ok: response.ok
+      });
       
       if (!response.ok) {
         const errorText = await response.text();
@@ -126,7 +155,7 @@ async function makeRequest<T>(url: string, options: {
       return response.json();
     }
   } catch (error) {
-    console.error(`Request failed for ${url}:`, error);
+    console.error(`❌ Request failed for ${url}:`, error);
     
     if (error instanceof ApiError) {
       throw error;
@@ -134,15 +163,6 @@ async function makeRequest<T>(url: string, options: {
     
     throw new ApiError(0, `Network error: ${(error as Error).message || 'Unknown error'}`);
   }
-}
-
-async function handleResponse<T>(response: Response): Promise<T> {
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new ApiError(response.status, errorText || response.statusText);
-  }
-  
-  return response.json();
 }
 
 export const api = {
@@ -175,10 +195,9 @@ export const api = {
     }
   },
 
-  // Obtener historial de divisas - CORREGIDO
+  // Obtener historial de divisas
   async getCurrencyHistory(base: string, target: string, period: string): Promise<HistoricalDataPoint[]> {
     try {
-      // Usar query parameters según tu API actual
       const params = new URLSearchParams({
         base: base.toUpperCase(),
         target: target.toUpperCase(),
@@ -186,11 +205,10 @@ export const api = {
       });
       
       const url = `${API_BASE_URL}/currency-history?${params.toString()}`;
-      console.log(`Fetching currency history: ${url}`);
+      console.log(`📊 Fetching currency history: ${url}`);
       
       const response = await makeRequest<HistoricalDataResponse>(url);
       
-      // Extraer solo los data points
       return response.data || [];
     } catch (error) {
       console.error(`Failed to get currency history for ${base}/${target}:`, error);
@@ -218,79 +236,54 @@ export const api = {
 
   // Guardar conversión
   async saveConversion(conversion: Omit<Conversion, 'id' | 'createdAt' | 'timestamp'>): Promise<Conversion> {
-    try {
-      return await makeRequest<Conversion>(`${API_BASE_URL}/conversions`, {
-        method: 'POST',
-        body: conversion
-      });
-    } catch (error) {
-      console.error('Failed to save conversion:', error);
-      throw error;
-    }
+    console.log('💾 Saving conversion:', conversion);
+    return await makeRequest<Conversion>(`${API_BASE_URL}/conversions`, {
+      method: 'POST',
+      body: conversion
+    });
   },
 
-  // Obtener conversiones recientes - CORREGIDO
+  // Obtener conversiones recientes
   async getRecentConversions(limit = 10): Promise<Conversion[]> {
-    try {
-      // Usar la ruta correcta sin /recent
-      const url = `${API_BASE_URL}/conversions?limit=${limit}`;
-      console.log(`Fetching recent conversions: ${url}`);
-      
-      const result = await makeRequest<Conversion[]>(url);
-      console.log(`Got ${Array.isArray(result) ? result.length : 0} recent conversions`);
-      return Array.isArray(result) ? result : [];
-    } catch (error) {
-      console.error('Failed to get recent conversions:', error);
-      return []; // Devolver array vacío en caso de error
-    }
+    const url = `${API_BASE_URL}/conversions?limit=${limit}`;
+    console.log(`📋 Fetching recent conversions: ${url}`);
+    
+    const result = await makeRequest<Conversion[]>(url);
+    console.log(`Got ${Array.isArray(result) ? result.length : 0} recent conversions`);
+    return Array.isArray(result) ? result : [];
   },
 
   // Agregar favorito
   async addFavorite(favorite: Omit<Favorite, 'id' | 'createdAt' | 'timestamp'>): Promise<Favorite> {
-    try {
-      console.log('Adding favorite:', favorite);
-      return await makeRequest<Favorite>(`${API_BASE_URL}/favorites`, {
-        method: 'POST',
-        body: favorite
-      });
-    } catch (error) {
-      console.error('Failed to add favorite:', error);
-      throw error;
-    }
+    console.log('⭐ Adding favorite:', favorite);
+    return await makeRequest<Favorite>(`${API_BASE_URL}/favorites`, {
+      method: 'POST',
+      body: favorite
+    });
   },
 
   // Obtener favoritos
   async getFavorites(): Promise<Favorite[]> {
-    try {
-      const result = await makeRequest<Favorite[]>(`${API_BASE_URL}/favorites`);
-      console.log(`Got ${Array.isArray(result) ? result.length : 0} favorites`);
-      return Array.isArray(result) ? result : [];
-    } catch (error) {
-      console.error('Failed to get favorites:', error);
-      return []; // Devolver array vacío en caso de error
-    }
+    const result = await makeRequest<Favorite[]>(`${API_BASE_URL}/favorites`);
+    console.log(`Got ${Array.isArray(result) ? result.length : 0} favorites`);
+    return Array.isArray(result) ? result : [];
   },
 
-  // Eliminar favorito - CORREGIDO
+  // Eliminar favorito
   async removeFavorite(id: number | string): Promise<{ success: boolean; removedId: string }> {
-    try {
-      console.log(`Removing favorite with ID: ${id}`);
-      
-      // Usar query parameter según tu API
-      const url = `${API_BASE_URL}/favorites?id=${id}`;
-      
-      return await makeRequest<{ success: boolean; removedId: string }>(url, {
-        method: 'DELETE'
-      });
-    } catch (error) {
-      console.error(`Failed to remove favorite ${id}:`, error);
-      throw error;
-    }
+    console.log(`🗑️ Removing favorite with ID: ${id}`);
+    
+    const url = `${API_BASE_URL}/favorites?id=${id}`;
+    
+    return await makeRequest<{ success: boolean; removedId: string }>(url, {
+      method: 'DELETE'
+    });
   },
 
   // Función de diagnóstico
   async testConnection(): Promise<boolean> {
     try {
+      console.log('🧪 Testing API connection...');
       await this.getExchangeRates();
       console.log('✅ API connection test: SUCCESS');
       return true;

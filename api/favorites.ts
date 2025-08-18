@@ -1,4 +1,4 @@
-// api/favorites.ts - CORREGIDO
+// api/favorites.ts - CORREGIDO para aceptar ambas rutas
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 // Storage compartido usando global object
@@ -91,8 +91,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
         
       case 'DELETE': {
-        // Manejar tanto /api/favorites?id=123 como /api/favorites/123
-        const id = req.query.id || req.url?.split('/').pop();
+        // ✅ FLEXIBLE: Aceptar tanto /api/favorites/ID como /api/favorites?id=ID
+        let id = req.query.id;
+        
+        // Si no hay query param, extraer del path /api/favorites/ID
+        if (!id) {
+          const urlPath = req.url?.split('?')[0] || '';
+          const pathParts = urlPath.split('/').filter(Boolean);
+          
+          // Buscar el ID después de 'favorites' en la URL
+          const favoritesIndex = pathParts.findIndex(part => part === 'favorites');
+          if (favoritesIndex !== -1 && pathParts.length > favoritesIndex + 1) {
+            id = pathParts[favoritesIndex + 1];
+          }
+        }
+        
+        console.log(`DELETE request - URL: ${req.url}, Extracted ID: ${id}`);
         
         if (!id) {
           res.status(400).json({ error: 'Favorite ID is required' });
@@ -103,6 +117,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const updatedFavorites = favorites.filter(fav => fav.id !== id.toString());
         
         if (updatedFavorites.length === initialLength) {
+          console.log(`Favorite with ID ${id} not found`);
           res.status(404).json({ error: 'Favorite not found' });
           return;
         }
@@ -121,7 +136,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.error('Favorites API error:', error);
     res.status(500).json({ 
       error: 'Internal server error',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
     });
   }
 }
