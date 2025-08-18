@@ -1,6 +1,70 @@
 {
   "version": 2,
-  "buildCommand": "vite build",
-  "outputDirectory": "dist/public",
-  "installCommand": "npm install"
+  "builds": [
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/exchange-rates",
+      "dest": "/api/exchange-rates.js"
+    },
+    {
+      "src": "/api/currency-history",
+      "dest": "/api/currency-history.js"
+    },
+    {
+      "src": "/api/currency-history/(.*)",
+      "dest": "/api/currency-history.js?base=$1"
+    },
+    {
+      "src": "/api/conversions/recent",
+      "dest": "/api/conversions.js?recent=true"
+    },
+    {
+      "src": "/api/conversions",
+      "dest": "/api/conversions.js"
+    },
+    {
+      "src": "/api/favorites/(.*)",
+      "dest": "/api/favorites.js?id=$1"
+    },
+    {
+      "src": "/api/favorites",
+      "dest": "/api/favorites.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/dist/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "api/*.js": {
+      "maxDuration": 10
+    }
+  }
 }
