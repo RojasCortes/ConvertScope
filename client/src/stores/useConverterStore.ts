@@ -57,10 +57,13 @@ interface ConverterState {
   swapUnits: () => void;
   
   convertCurrency: (amount: number, from: string, to: string) => number;
+  
+  // ✨ NUEVO: Reset function
+  resetValues: () => void;
 }
 
 export const useConverterStore = create<ConverterState>((set, get) => ({
-  // Initial state
+  // Initial state - ✨ CAMBIO: fromValue inicializado en 0
   currencies: [],
   fromCurrency: 'USD',
   toCurrency: 'EUR',
@@ -71,7 +74,7 @@ export const useConverterStore = create<ConverterState>((set, get) => ({
   
   fromUnit: '',
   toUnit: '',
-  fromValue: 1,
+  fromValue: 0, // ✨ CAMBIO: Era 1, ahora 0
   toValue: 0,
   
   isLoading: false,
@@ -88,8 +91,19 @@ export const useConverterStore = create<ConverterState>((set, get) => ({
   
   setFromUnit: (fromUnit) => set({ fromUnit }),
   setToUnit: (toUnit) => set({ toUnit }),
-  setFromValue: (fromValue) => set({ fromValue }),
-  setToValue: (toValue) => set({ toValue }),
+  
+  // ✨ MEJORADO: Mejor manejo de valores
+  setFromValue: (fromValue) => {
+    // Asegurar que sea un número válido
+    const validValue = typeof fromValue === 'number' && !isNaN(fromValue) ? fromValue : 0;
+    set({ fromValue: validValue });
+  },
+  
+  setToValue: (toValue) => {
+    // Asegurar que sea un número válido
+    const validValue = typeof toValue === 'number' && !isNaN(toValue) ? toValue : 0;
+    set({ toValue: validValue });
+  },
   
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
@@ -114,17 +128,22 @@ export const useConverterStore = create<ConverterState>((set, get) => ({
     });
   },
   
+  // ✨ MEJORADO: Mejor manejo de conversión de divisas
   convertCurrency: (amount, from, to) => {
     const state = get();
     const { exchangeRates } = state;
     
     if (from === to) return amount;
+    if (amount === 0) return 0;
     
     // Convert to USD first if not USD
     let usdAmount = amount;
     if (from !== 'USD') {
       const fromRate = exchangeRates[from];
-      if (!fromRate) return 0;
+      if (!fromRate || fromRate === 0) {
+        console.warn(`No exchange rate found for ${from}`);
+        return 0;
+      }
       usdAmount = amount / fromRate;
     }
     
@@ -134,8 +153,22 @@ export const useConverterStore = create<ConverterState>((set, get) => ({
     }
     
     const toRate = exchangeRates[to];
-    if (!toRate) return 0;
+    if (!toRate || toRate === 0) {
+      console.warn(`No exchange rate found for ${to}`);
+      return 0;
+    }
     
     return usdAmount * toRate;
+  },
+  
+  // ✨ NUEVO: Reset function
+  resetValues: () => {
+    set({
+      fromValue: 0,
+      toValue: 0,
+      currencyAmount: 100,
+      convertedCurrencyAmount: 0,
+      error: null
+    });
   },
 }));

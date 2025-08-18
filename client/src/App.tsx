@@ -14,10 +14,12 @@ import { Settings } from '@/pages/Settings';
 import { More } from '@/pages/More';
 import NotFound from '@/pages/not-found';
 import { registerServiceWorker } from '@/lib/pwa';
+import { useStatusBar } from './hooks/useStatusBar';
 
 function AppRoutes() {
   const currentView = useAppStore((state) => state.currentView);
-
+  useStatusBar(); 
+  
   const renderCurrentView = () => {
     switch (currentView) {
       case 'home':

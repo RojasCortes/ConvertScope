@@ -21,6 +21,9 @@ export function CategoryConverter() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
+  // ✨ SOLUCIÓN: Estado completamente independiente para el input
+  const [displayValue, setDisplayValue] = useState('');
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const [quickReferenceData, setQuickReferenceData] = useState<any[]>([]);
 
   // Fetch favorites to check status
@@ -53,10 +56,19 @@ export function CategoryConverter() {
     }
   }, [units, fromUnit, setFromUnit, setToUnit]);
 
+  // ✨ NUEVO: Solo actualizar displayValue cuando NO esté enfocado
   useEffect(() => {
-    if (fromUnit && toUnit && fromValue) {
+    if (!isInputFocused) {
+      setDisplayValue(fromValue > 0 ? fromValue.toString() : '');
+    }
+  }, [fromValue, isInputFocused]);
+
+  useEffect(() => {
+    if (fromUnit && toUnit && fromValue > 0) {
       const converted = convertValue(fromValue, fromUnit, toUnit, currentCategory);
       setToValue(converted);
+    } else {
+      setToValue(0);
     }
   }, [fromValue, fromUnit, toUnit, currentCategory, setToValue]);
 
@@ -75,13 +87,50 @@ export function CategoryConverter() {
     }
   }, [units, currentCategory]);
 
-  const handleValueChange = (value: string) => {
-    const numValue = parseFloat(value) || 0;
-    setFromValue(numValue);
+  // ✨ NUEVO: Manejo definitivo del input
+  const handleInputChange = (value: string) => {
+    setDisplayValue(value);
+    
+    if (value === '' || value === '.') {
+      setFromValue(0);
+      return;
+    }
+
+    // Limpiar caracteres no válidos
+    const cleanValue = value.replace(/[^0-9.]/g, '');
+    
+    // Evitar múltiples puntos
+    if ((cleanValue.match(/\./g) || []).length > 1) {
+      return;
+    }
+
+    const numValue = parseFloat(cleanValue);
+    if (!isNaN(numValue) && numValue >= 0) {
+      setFromValue(numValue);
+    }
+  };
+
+  const handleInputFocus = () => {
+    setIsInputFocused(true);
+    // Si el campo muestra 0, limpiarlo cuando se enfoque
+    if (displayValue === '0') {
+      setDisplayValue('');
+    }
+  };
+
+  const handleInputBlur = () => {
+    setIsInputFocused(false);
+    // Si el campo está vacío al salir del foco, mostrar el valor actual
+    if (displayValue === '') {
+      setDisplayValue(fromValue > 0 ? fromValue.toString() : '');
+    }
   };
 
   const handleSwap = () => {
+    // Actualizar displayValue inmediatamente
+    setDisplayValue(toValue > 0 ? toValue.toString() : '');
     swapUnits();
+    
     // Save conversion
     saveConversionMutation.mutate({
       fromUnit: toUnit,
@@ -160,12 +209,16 @@ export function CategoryConverter() {
                     ))}
                   </SelectContent>
                 </Select>
-                <Input
-                  type="number"
-                  value={fromValue}
-                  onChange={(e) => handleValueChange(e.target.value)}
-                  className="w-full mt-2 text-lg font-semibold"
-                  placeholder="0"
+                {/* ✨ INPUT HTML NATIVO - SIN SHADCN */}
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={displayValue}
+                  onChange={(e) => handleInputChange(e.target.value)}
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  className="w-full mt-2 text-lg font-semibold px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  placeholder="Ingresa un valor"
                 />
               </div>
 

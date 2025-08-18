@@ -145,3 +145,77 @@
   align-items: center;
   justify-content: center;
 }
+
+/* ===== ANDROID SAFE AREA FIXES INMEDIATOS ===== */
+
+/* Para Capacitor Android */
+.capacitor-android body {
+  padding-top: max(20px, env(safe-area-inset-top));
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* Header principal */
+.capacitor-android header,
+.capacitor-android [role="banner"] {
+  padding-top: max(20px, env(safe-area-inset-top)) !important;
+  margin-top: 0 !important;
+}
+
+/* Bottom navigation */
+.capacitor-android nav[class*="bottom"],
+.capacitor-android nav[class*="fixed"],
+.capacitor-android footer {
+  padding-bottom: max(20px, env(safe-area-inset-bottom)) !important;
+}
+
+/* Fix general para evitar contenido pegado */
+.capacitor-android main,
+.capacitor-android [role="main"] {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* Fix más agresivo para Android */
+.capacitor-android * {
+  box-sizing: border-box;
+}
+
+.capacitor-android {
+  --safe-top: max(40px, env(safe-area-inset-top));
+  --safe-bottom: max(40px, env(safe-area-inset-bottom));
+}
+
+.capacitor-android body {
+  padding: var(--safe-top) 0 var(--safe-bottom) 0 !important;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Específico para tu layout */
+.capacitor-android > div:first-child {
+  margin-top: var(--safe-top);
+  margin-bottom: var(--safe-bottom);
+}
+
+/* Fix específico para Status Bar en Android */
+.capacitor-android body {
+  /* Padding fijo para Android (ya que safe-area-top no funciona bien) */
+  padding-top: 24px !important; /* Altura típica de status bar */
+  margin: 0;
+}
+
+/* Para dispositivos con notch o status bar más grande */
+@media screen and (min-height: 800px) {
+  .capacitor-android body {
+    padding-top: 32px !important;
+  }
+}
+
+/* Para tu Motorola One Macro específicamente */
+@media screen and (device-width: 720px) {
+  .capacitor-android body {
+    padding-top: 28px !important;
+  }
+}

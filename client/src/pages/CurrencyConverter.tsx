@@ -1,3 +1,5 @@
+// 🔧 FIXES APLICADOS - Igual que CategoryConverter exitoso
+
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAppStore } from '@/stores/useAppStore';
@@ -27,10 +29,13 @@ export function CurrencyConverter() {
   const [period, setPeriod] = useState('7d');
   const queryClient = useQueryClient();
 
+  // 🚀 FIX 1: Estado simplificado para el input (igual que CategoryConverter)
+  const [displayAmount, setDisplayAmount] = useState('');
+
   // Fetch exchange rates
   const { data: ratesData, isLoading: ratesLoading, error: ratesError } = useQuery({
     queryKey: ['/api/exchange-rates'],
-    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
+    refetchInterval: 5 * 60 * 1000,
     retry: 1,
     queryFn: async () => {
       try {
@@ -38,7 +43,6 @@ export function CurrencyConverter() {
         if (!response.ok) throw new Error('API not available');
         return await response.json();
       } catch (error) {
-        // Fallback to mock data if API is not available
         console.log('Using fallback exchange rates');
         return {
           base: "USD",
@@ -57,7 +61,8 @@ export function CurrencyConverter() {
             KRW: 1180.0,
             RUB: 74.0,
             ZAR: 14.8,
-            SGD: 1.34
+            SGD: 1.34,
+            COP: 4200.0
           },
           timestamp: Date.now()
         };
@@ -69,7 +74,7 @@ export function CurrencyConverter() {
   const { data: historicalDataResponse, isLoading: isHistoricalLoading, error: historicalError } = useQuery({
     queryKey: ['/api/currency-history', fromCurrency, toCurrency, period],
     enabled: !!(fromCurrency && toCurrency),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
     queryFn: async () => {
       const response = await fetch(`/api/currency-history/${fromCurrency}/${toCurrency}/${period}`);
       if (!response.ok) throw new Error('Failed to fetch historical data');
@@ -89,10 +94,6 @@ export function CurrencyConverter() {
     fav.fromUnit === fromCurrency && fav.toUnit === toCurrency && fav.category === 'currency'
   );
 
-
-
-
-
   const saveConversionMutation = useMutation({
     mutationFn: async (conversionData: any) => {
       return apiRequest('POST', '/api/conversions', conversionData);
@@ -108,7 +109,6 @@ export function CurrencyConverter() {
       setExchangeRates(ratesData.rates as Record<string, number>);
     } else if (ratesError) {
       console.log('Exchange rates error, setting fallback data');
-      // Set fallback rates if API fails
       setExchangeRates({
         USD: 1,
         EUR: 0.85,
@@ -119,7 +119,8 @@ export function CurrencyConverter() {
         CHF: 0.92,
         CNY: 6.45,
         MXN: 17.5,
-        BRL: 5.2
+        BRL: 5.2,
+        COP: 4200.0
       });
     }
   }, [ratesData, ratesError, setExchangeRates]);
@@ -133,31 +134,55 @@ export function CurrencyConverter() {
     }
   }, [historicalDataResponse, setHistoricalData]);
 
+  // 🚀 FIX 2: useEffect simplificado - Solo se ejecuta en conversión automática
   useEffect(() => {
-    if (exchangeRates && Object.keys(exchangeRates).length > 0 && currencyAmount && fromCurrency && toCurrency) {
+    if (exchangeRates && Object.keys(exchangeRates).length > 0 && currencyAmount >= 0 && fromCurrency && toCurrency) {
       console.log('Converting:', currencyAmount, fromCurrency, 'to', toCurrency);
-      console.log('Available rates:', Object.keys(exchangeRates));
       const converted = convertCurrency(currencyAmount, fromCurrency, toCurrency);
       console.log('Conversion result:', converted);
       setConvertedCurrencyAmount(converted);
-    } else {
-      console.log('Conversion not ready - exchangeRates:', Object.keys(exchangeRates || {}).length, 'amount:', currencyAmount);
     }
   }, [currencyAmount, fromCurrency, toCurrency, exchangeRates, convertCurrency, setConvertedCurrencyAmount]);
 
+  // 🚀 FIX 3: Función de manejo simplificada (igual que CategoryConverter)
   const handleAmountChange = (value: string) => {
-    const amount = parseFloat(value) || 0;
-    setCurrencyAmount(amount);
+    setDisplayAmount(value);
+    
+    // Solo convertir a número si hay contenido y es válido
+    if (value.trim() === '') {
+      setCurrencyAmount(0);
+      return;
+    }
+
+    const numValue = parseFloat(value);
+    if (!isNaN(numValue) && numValue >= 0) {
+      setCurrencyAmount(numValue);
+    }
+    // Si el valor no es válido, no actualizamos currencyAmount
+    // pero sí mantenemos displayAmount para que el usuario vea lo que escribió
   };
 
+  // 🚀 FIX 4: Swap mejorado
   const handleSwap = () => {
+    const newFromAmount = convertedCurrencyAmount;
+    const newToAmount = currencyAmount;
+    
+    // Actualizar display inmediatamente
+    setDisplayAmount(newFromAmount > 0 ? newFromAmount.toString() : '');
+    
+    // Hacer el swap
     swapCurrencies();
+    
+    // Actualizar valores
+    setCurrencyAmount(newFromAmount);
+    setConvertedCurrencyAmount(newToAmount);
+    
     // Save conversion
     saveConversionMutation.mutate({
       fromUnit: toCurrency,
       toUnit: fromCurrency,
-      fromValue: convertedCurrencyAmount.toString(),
-      toValue: currencyAmount.toString(),
+      fromValue: newFromAmount.toString(),
+      toValue: newToAmount.toString(),
       category: 'currency'
     });
   };
@@ -168,12 +193,10 @@ export function CurrencyConverter() {
   };
 
   const getPriceChange = () => {
-    // Mock price change calculation
-    return (Math.random() - 0.5) * 2; // Random between -1 and 1
+    return (Math.random() - 0.5) * 2;
   };
 
   const getCurrencyStrength = (currency: string) => {
-    // Mock currency strength calculation
     const strengths: Record<string, number> = {
       USD: 85,
       EUR: 78,
@@ -181,6 +204,7 @@ export function CurrencyConverter() {
       JPY: 68,
       CHF: 75,
       CAD: 65,
+      COP: 60,
     };
     return strengths[currency] || 60;
   };
@@ -245,12 +269,14 @@ export function CurrencyConverter() {
                     ))}
                   </SelectContent>
                 </Select>
-                <Input
-                  type="number"
-                  value={currencyAmount}
+                {/* 🚀 FIX 5: Input simplificado - Igual que CategoryConverter */}
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={displayAmount}
                   onChange={(e) => handleAmountChange(e.target.value)}
-                  className="w-full mt-2 text-lg font-semibold"
-                  placeholder="0.00"
+                  className="w-full mt-2 text-lg font-semibold px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  placeholder="Ingresa un monto"
                 />
               </div>
 
@@ -283,7 +309,10 @@ export function CurrencyConverter() {
                   </SelectContent>
                 </Select>
                 <div className="w-full mt-2 px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-lg font-semibold">
-                  {convertedCurrencyAmount.toFixed(2)}
+                    {new Intl.NumberFormat('en-US', { 
+                        minimumFractionDigits: 2, 
+                        maximumFractionDigits: 6 
+                    }).format(convertedCurrencyAmount)}
                 </div>
               </div>
             </div>
@@ -310,7 +339,6 @@ export function CurrencyConverter() {
                   onClick={async () => {
                     try {
                       if (isFavorited) {
-                        // Remove from favorites
                         const favoriteToRemove = favoritesData?.find((fav: any) => 
                           fav.fromUnit === fromCurrency && fav.toUnit === toCurrency && fav.category === 'currency'
                         );
@@ -322,7 +350,6 @@ export function CurrencyConverter() {
                           alert('Removido de favoritos');
                         }
                       } else {
-                        // Add to favorites
                         const response = await fetch('/api/favorites', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
