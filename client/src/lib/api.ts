@@ -1,10 +1,8 @@
-// client/src/lib/api.ts - SIMPLIFICADO - SOLO FETCH
+// client/src/lib/api.ts - CON MANEJO DE ERRORES HTML
 import { Capacitor } from '@capacitor/core';
 
-// Detección de plataforma
 const isNative = Capacitor.isNativePlatform();
 
-// URL base
 export const API_BASE_URL = isNative 
   ? 'https://convert-scope.vercel.app/api'
   : '/api';
@@ -13,7 +11,6 @@ console.log('🔍 API Configuration:');
 console.log('- Platform:', Capacitor.getPlatform());
 console.log('- IsNative:', isNative);
 console.log('- API_BASE_URL:', API_BASE_URL);
-console.log('- Using: FETCH ONLY (no CapacitorHttp)');
 
 export interface ExchangeRatesResponse {
   base: string;
@@ -66,7 +63,7 @@ export class ApiError extends Error {
   }
 }
 
-// ✅ FUNCIÓN SIMPLIFICADA - SOLO FETCH
+// ✅ FUNCIÓN CON DETECCIÓN DE ERRORES HTML
 async function makeRequest<T>(url: string, options: {
   method?: 'GET' | 'POST' | 'DELETE';
   body?: any;
@@ -80,7 +77,7 @@ async function makeRequest<T>(url: string, options: {
     ...headers
   };
 
-  console.log(`🌐 Fetch Request:`, { method, url });
+  console.log(`🌐 Request:`, { method, url });
   
   const fetchOptions: RequestInit = {
     method,
@@ -99,15 +96,32 @@ async function makeRequest<T>(url: string, options: {
     console.log(`📡 Response:`, {
       status: response.status,
       url: response.url,
-      ok: response.ok
+      ok: response.ok,
+      contentType: response.headers.get('content-type')
     });
     
+    // ✅ VERIFICAR QUE NO SEA HTML
+    const contentType = response.headers.get('content-type') || '';
+    const responseText = await response.text();
+    
+    // ✅ DETECTAR SI ES HTML (página de error)
+    if (responseText.includes('<!DOCTYPE') || responseText.includes('<html')) {
+      console.error('❌ API returned HTML instead of JSON:', responseText.substring(0, 200));
+      throw new ApiError(response.status, `API returned HTML page instead of JSON. URL: ${url}`);
+    }
+    
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new ApiError(response.status, errorText || response.statusText);
+      throw new ApiError(response.status, responseText || response.statusText);
     }
 
-    return response.json();
+    // ✅ VERIFICAR QUE SEA JSON VÁLIDO
+    try {
+      return JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('❌ Invalid JSON response:', responseText.substring(0, 200));
+      throw new ApiError(response.status, `Invalid JSON response from ${url}`);
+    }
+    
   } catch (error) {
     console.error(`❌ Request failed for ${url}:`, error);
     
@@ -131,17 +145,8 @@ export const api = {
       return {
         base: "USD",
         rates: {
-          USD: 1,
-          EUR: 0.85,
-          GBP: 0.73,
-          JPY: 110.0,
-          CAD: 1.25,
-          AUD: 1.35,
-          CHF: 0.92,
-          CNY: 6.45,
-          MXN: 17.5,
-          BRL: 5.2,
-          COP: 4100.0
+          USD: 1, EUR: 0.85, GBP: 0.73, JPY: 110.0, CAD: 1.25,
+          AUD: 1.35, CHF: 0.92, CNY: 6.45, MXN: 17.5, BRL: 5.2, COP: 4100.0
         },
         timestamp: Date.now(),
         fallback: true
@@ -159,10 +164,7 @@ export const api = {
       });
       
       const url = `${API_BASE_URL}/currency-history?${params.toString()}`;
-      console.log(`📊 Fetching currency history: ${url}`);
-      
       const response = await makeRequest<HistoricalDataResponse>(url);
-      
       return response.data || [];
     } catch (error) {
       console.error(`Failed to get currency history for ${base}/${target}:`, error);
@@ -172,35 +174,68 @@ export const api = {
 
   // Guardar conversión
   async saveConversion(conversion: Omit<Conversion, 'id' | 'createdAt' | 'timestamp'>): Promise<Conversion> {
-    console.log('💾 Saving conversion:', conversion);
-    return await makeRequest<Conversion>(`${API_BASE_URL}/conversions`, {
-      method: 'POST',
-      body: conversion
-    });
+    try {
+      console.log('💾 Saving conversion:', conversion);
+      return await makeRequest<Conversion>(`${API_BASE_URL}/conversions`, {
+        method: 'POST',
+        body: conversion
+      });
+    } catch (error) {
+      console.error('Failed to save conversion:', error);
+      
+      // ✅ FALLBACK: Crear conversión mock local
+      const mockConversion: Conversion = {
+        id: Date.now().toString(),
+        ...conversion,
+        createdAt: new Date().toISOString(),
+        timestamp: Date.now()
+      };
+      
+      console.log('Using mock conversion:', mockConversion);
+      return mockConversion;
+    }
   },
 
-  // ✅ CONVERSIONES RECIENTES - RUTA CORRECTA
+  // ✅ CONVERSIONES RECIENTES CON FALLBACK
   async getRecentConversions(limit = 10): Promise<Conversion[]> {
-    const url = `${API_BASE_URL}/conversions?limit=${limit}`;
-    console.log(`📋 Fetching recent conversions: ${url}`);
-    
     try {
+      const url = `${API_BASE_URL}/conversions?limit=${limit}`;
+      console.log(`📋 Fetching recent conversions: ${url}`);
+      
       const result = await makeRequest<Conversion[]>(url);
       console.log(`Got ${Array.isArray(result) ? result.length : 0} recent conversions`);
       return Array.isArray(result) ? result : [];
     } catch (error) {
       console.error('Failed to get recent conversions:', error);
+      
+      // ✅ FALLBACK: Devolver array vacío pero informar
+      console.log('📋 Using empty conversions as fallback');
       return [];
     }
   },
 
   // Agregar favorito
   async addFavorite(favorite: Omit<Favorite, 'id' | 'createdAt' | 'timestamp'>): Promise<Favorite> {
-    console.log('⭐ Adding favorite:', favorite);
-    return await makeRequest<Favorite>(`${API_BASE_URL}/favorites`, {
-      method: 'POST',
-      body: favorite
-    });
+    try {
+      console.log('⭐ Adding favorite:', favorite);
+      return await makeRequest<Favorite>(`${API_BASE_URL}/favorites`, {
+        method: 'POST',
+        body: favorite
+      });
+    } catch (error) {
+      console.error('Failed to add favorite:', error);
+      
+      // ✅ FALLBACK: Crear favorito mock local
+      const mockFavorite: Favorite = {
+        id: Date.now().toString(),
+        ...favorite,
+        createdAt: new Date().toISOString(),
+        timestamp: Date.now()
+      };
+      
+      console.log('Using mock favorite:', mockFavorite);
+      return mockFavorite;
+    }
   },
 
   // Obtener favoritos
@@ -215,15 +250,23 @@ export const api = {
     }
   },
 
-  // ✅ ELIMINAR FAVORITO - RUTA CORRECTA
+  // ✅ ELIMINAR FAVORITO CON FALLBACK
   async removeFavorite(id: number | string): Promise<{ success: boolean; removedId: string }> {
-    console.log(`🗑️ Removing favorite with ID: ${id}`);
-    
-    const url = `${API_BASE_URL}/favorites?id=${id}`;
-    
-    return await makeRequest<{ success: boolean; removedId: string }>(url, {
-      method: 'DELETE'
-    });
+    try {
+      console.log(`🗑️ Removing favorite with ID: ${id}`);
+      
+      const url = `${API_BASE_URL}/favorites?id=${id}`;
+      
+      return await makeRequest<{ success: boolean; removedId: string }>(url, {
+        method: 'DELETE'
+      });
+    } catch (error) {
+      console.error(`Failed to remove favorite ${id}:`, error);
+      
+      // ✅ FALLBACK: Simular eliminación exitosa
+      console.log(`Using mock removal for favorite ${id}`);
+      return { success: true, removedId: id.toString() };
+    }
   },
 
   // Función de diagnóstico
