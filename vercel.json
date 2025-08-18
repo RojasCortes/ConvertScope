@@ -1,25 +1,21 @@
 {
   "version": 2,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/exchange-rates",
-      "dest": "/api/exchange-rates.js"
+      "source": "/api/exchange-rates",
+      "destination": "/api/exchange-rates"
     },
     {
-      "src": "/api/currency-history",
-      "dest": "/api/currency-history.js"
+      "source": "/api/currency-history",
+      "destination": "/api/currency-history"
     },
     {
-      "src": "/api/conversions",
-      "dest": "/api/conversions.js"
+      "source": "/api/conversions",
+      "destination": "/api/conversions"
     },
     {
-      "src": "/api/favorites",
-      "dest": "/api/favorites.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/dist/public/$1"
+      "source": "/api/favorites",
+      "destination": "/api/favorites"
     }
   ],
   "headers": [
@@ -44,5 +40,7 @@
         }
       ]
     }
-  ]
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }
