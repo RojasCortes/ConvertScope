@@ -10,8 +10,16 @@
       "destination": "/api/currency-history"
     },
     {
+      "source": "/api/conversions/recent",
+      "destination": "/api/conversions"
+    },
+    {
       "source": "/api/conversions",
       "destination": "/api/conversions"
+    },
+    {
+      "source": "/api/favorites/(.*)",
+      "destination": "/api/favorites"
     },
     {
       "source": "/api/favorites",

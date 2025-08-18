@@ -19,10 +19,6 @@ const config: CapacitorConfig = {
     androidScheme: 'https'
   },
   plugins: {
-    // Habilitar CapacitorHttp para requests nativos
-    CapacitorHttp: {
-      enabled: true
-    },
     // Configuración para depuración
     CapacitorCookies: {
       enabled: true

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'convertscope-v1.0.0';
+/* const CACHE_NAME = 'convertscope-v1.0.0';
 const STATIC_ASSETS = [
   '/',
   '/src/main.tsx',
@@ -250,3 +250,6 @@ self.addEventListener('message', (event) => {
 });
 
 console.log('[SW] ConvertScope Service Worker loaded');
+ */
+
+console.log('Service Worker disabled for API debugging');
