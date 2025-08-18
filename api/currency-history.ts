@@ -1,5 +1,19 @@
-// api/currency-history.ts - CORREGIDO (eliminar [...params].ts)
+// api/currency-history.ts - SIN ERRORES TYPESCRIPT
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+
+interface HistoricalDataPoint {
+  date: string;
+  rate: string;
+  timestamp: number;
+}
+
+interface HistoricalResponse {
+  base: string;
+  target: string;
+  period: string;
+  data: HistoricalDataPoint[];
+  generated: string;
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Enhanced CORS headers
@@ -55,7 +69,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const timePeriod = period as string;
 
     // Determinar número de días basado en el período
-    const periodMap: Record<string, number> = {
+    const periodMap: { [key: string]: number } = {
       '7d': 7,
       '1w': 7,
       '1m': 30,
@@ -69,7 +83,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Obtener tasa base realista para pares comunes
     const pair = `${baseCurrency}/${targetCurrency}`;
-    const rateMap: Record<string, number> = {
+    const rateMap: { [key: string]: number } = {
       // USD pairs
       'USD/EUR': 0.85,
       'USD/GBP': 0.73,
@@ -95,7 +109,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       'COP/GBP': 0.000178,
       
       // Reverse pairs
-      'EUR/USD': 1.18,
       'GBP/USD': 1.37,
       'JPY/USD': 0.009,
       'CAD/USD': 0.80,
@@ -106,9 +119,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       'BRL/USD': 0.19,
       
       // Common cross pairs
-      'EUR/GBP': 0.86,
+      'EUR-GBP': 0.86,
       'GBP/EUR': 1.16,
-      'EUR/JPY': 129.5,
+      'EUR-JPY': 129.5,
       'GBP/JPY': 150.8
     };
 
@@ -120,7 +133,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Generar datos históricos
-    const historicalData = [];
+    const historicalData: HistoricalDataPoint[] = [];
     const today = new Date();
     
     for (let i = days; i >= 0; i--) {
@@ -149,7 +162,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     
     console.log(`Generated ${historicalData.length} data points for ${pair} over ${days} days`);
     
-    const response = {
+    const response: HistoricalResponse = {
       base: baseCurrency,
       target: targetCurrency,
       period: timePeriod,
@@ -163,7 +176,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.error('Currency history error:', error);
     res.status(500).json({ 
       error: 'Unable to fetch historical data',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
     });
   }
 }

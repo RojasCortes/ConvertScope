@@ -5,7 +5,6 @@ const config: CapacitorConfig = {
   appId: 'com.convertscope.app', // Cambia por tu ID real
   appName: 'ConvertScope',
   webDir: 'dist/public', // Ajusta según tu estructura
-  bundledWebRuntime: false,
   server: {
     // URLs permitidas para APIs
     allowNavigation: [

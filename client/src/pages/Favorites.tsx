@@ -1,38 +1,83 @@
+// client/src/pages/Favorites.tsx - CORREGIDO
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { HeartOff, Star } from 'lucide-react';
 import { categories } from '@/lib/conversions';
-import { apiRequest } from '@/lib/queryClient';
+import { api, type Favorite } from '@/lib/api'; // ¡USAR TU API con tipos!
 
 export function Favorites() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  const { data: favorites = [], isLoading } = useQuery({
-    queryKey: ['/api/favorites'],
+  // ✅ CORREGIDO: Usar api.getFavorites() con tipos
+  const { data: favorites = [], isLoading, error } = useQuery<Favorite[]>({
+    queryKey: ['favorites'],
+    queryFn: api.getFavorites,
+    staleTime: 2 * 60 * 1000, // 2 minutos cache
+    retry: 3
   });
 
+  // ✅ CORREGIDO: Usar api.removeFavorite()
   const removeFavoriteMutation = useMutation({
-    mutationFn: async (id: number) => {
-      return apiRequest('DELETE', `/api/favorites/${id}`);
+    mutationFn: async (id: number | string) => {
+      console.log('Removing favorite with ID:', id);
+      return api.removeFavorite(id);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+    onSuccess: (data, id) => {
+      console.log('Favorite removed successfully:', id);
+      // Invalidar cache para refrescar la lista
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+      
+      // Opcional: Mostrar notificación de éxito
+      // toast.success('Favorito eliminado');
     },
+    onError: (error) => {
+      console.error('Failed to remove favorite:', error);
+      // Opcional: Mostrar notificación de error
+      // toast.error('Error al eliminar favorito');
+    }
   });
 
-  const handleRemoveFavorite = (id: number) => {
+  const handleRemoveFavorite = (id: number | string) => {
+    if (removeFavoriteMutation.isPending) return; // Evitar doble click
     removeFavoriteMutation.mutate(id);
   };
 
+  // ✅ AÑADIDO: Estados de carga y error
   if (isLoading) {
     return (
       <div className="p-4">
-        <div className="text-center">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          ⭐ {t('nav.favorites')}
+        </h2>
+        <div className="text-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
           <p className="mt-2 text-gray-500 dark:text-gray-400">{t('common.loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          ⭐ {t('nav.favorites')}
+        </h2>
+        <div className="text-center py-8">
+          <div className="text-4xl mb-2">⚠️</div>
+          <p className="text-red-500 dark:text-red-400">Error al cargar favoritos</p>
+          <p className="text-sm text-gray-500 mt-1">
+            Verifica tu conexión a internet
+          </p>
+          <Button 
+            onClick={() => queryClient.invalidateQueries({ queryKey: ['favorites'] })}
+            className="mt-4"
+          >
+            Reintentar
+          </Button>
         </div>
       </div>
     );
@@ -46,8 +91,10 @@ export function Favorites() {
       
       {Array.isArray(favorites) && favorites.length > 0 ? (
         <div className="space-y-4">
-          {favorites.map((favorite: any) => {
+          {favorites.map((favorite: Favorite) => {
             const category = categories.find(c => c.id === favorite.category);
+            const isRemoving = removeFavoriteMutation.isPending;
+            
             return (
               <Card key={favorite.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                 <CardContent className="p-4">
@@ -61,21 +108,39 @@ export function Favorites() {
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                           {t(`categories.${favorite.category}.name`)}
                         </p>
+                        {/* ✅ AÑADIDO: Mostrar fecha de creación */}
+                        {favorite.createdAt && (
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
+                            {new Date(favorite.createdAt).toLocaleDateString()}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => handleRemoveFavorite(favorite.id)}
-                      className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                      disabled={isRemoving}
+                      className={`p-2 text-gray-400 hover:text-red-500 transition-colors ${isRemoving ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                      <HeartOff className="w-4 h-4" />
+                      {isRemoving ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-500"></div>
+                      ) : (
+                        <HeartOff className="w-4 h-4" />
+                      )}
                     </Button>
                   </div>
                 </CardContent>
               </Card>
             );
           })}
+          
+          {/* ✅ AÑADIDO: Información adicional */}
+          <div className="text-center pt-4">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {favorites.length} favorito{favorites.length !== 1 ? 's' : ''} guardado{favorites.length !== 1 ? 's' : ''}
+            </p>
+          </div>
         </div>
       ) : (
         <div className="text-center py-12">
@@ -83,8 +148,11 @@ export function Favorites() {
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
             {t('favorites.empty.title')}
           </h3>
-          <p className="text-gray-500 dark:text-gray-400">
+          <p className="text-gray-500 dark:text-gray-400 mb-4">
             {t('favorites.empty.description')}
+          </p>
+          <p className="text-sm text-gray-400 dark:text-gray-500">
+            💡 Ve a cualquier conversor y toca el ❤️ para agregar favoritos
           </p>
         </div>
       )}

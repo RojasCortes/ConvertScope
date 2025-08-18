@@ -1,3 +1,4 @@
+// client/src/pages/Home.tsx - CORREGIDO
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAppStore } from '@/stores/useAppStore';
@@ -7,18 +8,29 @@ import { Input } from '@/components/ui/input';
 import { AdSpace } from '@/components/AdSpace';
 import { Search, TrendingUp } from 'lucide-react';
 import { categories } from '@/lib/conversions';
+import { api, type Conversion } from '@/lib/api'; // ¡USAR TU API con tipos!
 
 export function Home() {
   const { setCurrentView, setCurrentCategory } = useAppStore();
   const { t } = useTranslation();
 
-  const { data: recentConversions = [] } = useQuery({
-    queryKey: ['/api/conversions/recent'],
-    queryFn: async () => {
-      const response = await fetch('/api/conversions/recent?limit=5');
-      return response.json();
-    },
+  // ✅ CORREGIDO: Usar api.getRecentConversions() con tipos
+  const { data: recentConversions = [], isLoading, error } = useQuery<Conversion[]>({
+    queryKey: ['recent-conversions'],
+    queryFn: () => api.getRecentConversions(5),
+    staleTime: 5 * 60 * 1000, // 5 minutos cache
+    retry: 3,
+    retryDelay: 1000
   });
+
+  // Probar conectividad en desarrollo
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      api.testConnection().then(result => {
+        console.log('API Connection test:', result ? '✅ SUCCESS' : '❌ FAILED');
+      });
+    }
+  }, []);
 
   const handleCategoryClick = (categoryId: string) => {
     setCurrentCategory(categoryId);
@@ -90,9 +102,27 @@ export function Home() {
           {t('home.recentConversions')}
         </h2>
         
+        {/* ✅ AÑADIDO: Indicadores de estado */}
+        {isLoading && (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+            <p className="text-gray-500 dark:text-gray-400">{t('common.loading')}</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="text-center py-8">
+            <div className="text-4xl mb-2">⚠️</div>
+            <p className="text-red-500 dark:text-red-400">Error al cargar conversiones</p>
+            <p className="text-sm text-gray-500 mt-1">
+              Verifica tu conexión a internet
+            </p>
+          </div>
+        )}
+        
         <div className="space-y-3">
-          {recentConversions.length > 0 ? (
-            recentConversions.map((conversion: any) => (
+          {!isLoading && !error && recentConversions.length > 0 ? (
+            recentConversions.map((conversion: Conversion) => (
               <Card key={conversion.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
@@ -122,12 +152,13 @@ export function Home() {
                 </CardContent>
               </Card>
             ))
-          ) : (
+          ) : !isLoading && !error ? (
             <div className="text-center py-8 text-gray-500 dark:text-gray-400">
               <div className="text-4xl mb-2">📋</div>
               <p>{t('home.noRecentConversions')}</p>
+              <p className="text-sm mt-1">Realiza una conversión para verla aquí</p>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
 

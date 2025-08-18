@@ -30,6 +30,27 @@ export interface HistoricalDataResponse {
   generated: string;
 }
 
+export interface Conversion {
+  id: string;
+  fromValue: number;
+  fromUnit: string;
+  toValue: number;
+  toUnit: string;
+  category: string;
+  createdAt: string;
+  timestamp: number;
+}
+
+export interface Favorite {
+  id: string;
+  fromUnit: string;
+  toUnit: string;
+  category: string;
+  name?: string;
+  createdAt: string;
+  timestamp: number;
+}
+
 export class ApiError extends Error {
   constructor(
     public status: number,
@@ -111,7 +132,7 @@ async function makeRequest<T>(url: string, options: {
       throw error;
     }
     
-    throw new ApiError(0, `Network error: ${error.message}`);
+    throw new ApiError(0, `Network error: ${(error as Error).message || 'Unknown error'}`);
   }
 }
 
@@ -196,9 +217,9 @@ export const api = {
   },
 
   // Guardar conversión
-  async saveConversion(conversion: any) {
+  async saveConversion(conversion: Omit<Conversion, 'id' | 'createdAt' | 'timestamp'>): Promise<Conversion> {
     try {
-      return await makeRequest(`${API_BASE_URL}/conversions`, {
+      return await makeRequest<Conversion>(`${API_BASE_URL}/conversions`, {
         method: 'POST',
         body: conversion
       });
@@ -209,15 +230,15 @@ export const api = {
   },
 
   // Obtener conversiones recientes - CORREGIDO
-  async getRecentConversions(limit = 10) {
+  async getRecentConversions(limit = 10): Promise<Conversion[]> {
     try {
       // Usar la ruta correcta sin /recent
       const url = `${API_BASE_URL}/conversions?limit=${limit}`;
       console.log(`Fetching recent conversions: ${url}`);
       
-      const result = await makeRequest(url);
-      console.log(`Got ${result?.length || 0} recent conversions`);
-      return result || [];
+      const result = await makeRequest<Conversion[]>(url);
+      console.log(`Got ${Array.isArray(result) ? result.length : 0} recent conversions`);
+      return Array.isArray(result) ? result : [];
     } catch (error) {
       console.error('Failed to get recent conversions:', error);
       return []; // Devolver array vacío en caso de error
@@ -225,10 +246,10 @@ export const api = {
   },
 
   // Agregar favorito
-  async addFavorite(favorite: any) {
+  async addFavorite(favorite: Omit<Favorite, 'id' | 'createdAt' | 'timestamp'>): Promise<Favorite> {
     try {
       console.log('Adding favorite:', favorite);
-      return await makeRequest(`${API_BASE_URL}/favorites`, {
+      return await makeRequest<Favorite>(`${API_BASE_URL}/favorites`, {
         method: 'POST',
         body: favorite
       });
@@ -239,11 +260,11 @@ export const api = {
   },
 
   // Obtener favoritos
-  async getFavorites() {
+  async getFavorites(): Promise<Favorite[]> {
     try {
-      const result = await makeRequest(`${API_BASE_URL}/favorites`);
-      console.log(`Got ${result?.length || 0} favorites`);
-      return result || [];
+      const result = await makeRequest<Favorite[]>(`${API_BASE_URL}/favorites`);
+      console.log(`Got ${Array.isArray(result) ? result.length : 0} favorites`);
+      return Array.isArray(result) ? result : [];
     } catch (error) {
       console.error('Failed to get favorites:', error);
       return []; // Devolver array vacío en caso de error
@@ -251,14 +272,14 @@ export const api = {
   },
 
   // Eliminar favorito - CORREGIDO
-  async removeFavorite(id: number | string) {
+  async removeFavorite(id: number | string): Promise<{ success: boolean; removedId: string }> {
     try {
       console.log(`Removing favorite with ID: ${id}`);
       
       // Usar query parameter según tu API
       const url = `${API_BASE_URL}/favorites?id=${id}`;
       
-      return await makeRequest(url, {
+      return await makeRequest<{ success: boolean; removedId: string }>(url, {
         method: 'DELETE'
       });
     } catch (error) {

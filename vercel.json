@@ -19,20 +19,8 @@
       "dest": "/api/currency-history.js"
     },
     {
-      "src": "/api/currency-history/(.*)",
-      "dest": "/api/currency-history.js?base=$1"
-    },
-    {
-      "src": "/api/conversions/recent",
-      "dest": "/api/conversions.js?recent=true"
-    },
-    {
       "src": "/api/conversions",
       "dest": "/api/conversions.js"
-    },
-    {
-      "src": "/api/favorites/(.*)",
-      "dest": "/api/favorites.js?id=$1"
     },
     {
       "src": "/api/favorites",
@@ -58,13 +46,17 @@
         {
           "key": "Access-Control-Allow-Headers",
           "value": "Content-Type, Authorization"
+        },
+        {
+          "key": "Access-Control-Max-Age",
+          "value": "86400"
         }
       ]
     }
   ],
   "functions": {
     "api/*.js": {
-      "maxDuration": 10
+      "maxDuration": 15
     }
   }
 }
