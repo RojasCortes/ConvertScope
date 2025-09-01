@@ -96,7 +96,7 @@ export function CategoryConverter() {
       // Auto-save conversion after a delay
       const timer = setTimeout(() => {
         if (converted > 0) {
-          console.log('💾 Saving conversion:', { fromUnit, toUnit, fromValue, toValue: converted, category: currentCategory });
+          console.log('💾 Saving category conversion:', { fromUnit, toUnit, fromValue, toValue: converted, category: currentCategory });
           saveConversionMutation.mutate({
             fromUnit,
             toUnit,
