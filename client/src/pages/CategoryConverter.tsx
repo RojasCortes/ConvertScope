@@ -65,11 +65,11 @@ export function CategoryConverter() {
   });
 
   useEffect(() => {
-    if (units.length > 0 && !fromUnit) {
-      setFromUnit(units[0].id);
-      setToUnit(units[1]?.id || units[0].id);
+    if (units.length > 0 && (!fromUnit || !toUnit)) {
+      if (!fromUnit) setFromUnit(units[0].id);
+      if (!toUnit) setToUnit(units[1]?.id || units[0].id);
     }
-  }, [units, fromUnit, setFromUnit, setToUnit]);
+  }, [units, fromUnit, toUnit, setFromUnit, setToUnit]);
 
   // ✨ NUEVO: Solo actualizar displayValue cuando NO esté enfocado
   useEffect(() => {
@@ -249,7 +249,7 @@ export function CategoryConverter() {
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
                   className="w-full mt-2 text-lg font-semibold px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  placeholder="Ingresa un valor"
+                  placeholder="Enter value"
                 />
               </div>
 
@@ -271,7 +271,7 @@ export function CategoryConverter() {
                 </label>
                 <Select value={toUnit} onValueChange={setToUnit}>
                   <SelectTrigger className="w-full">
-                    <SelectValue />
+                    <SelectValue placeholder={t('converter.to')} />
                   </SelectTrigger>
                   <SelectContent>
                     {units.map((unit) => (

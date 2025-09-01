@@ -65,10 +65,20 @@ export function CurrencyConverter() {
   const saveConversionMutation = useMutation({
     mutationFn: async (conversionData: any) => {
       const { localStorageManager } = await import('@/lib/localStorage');
-      return localStorageManager.saveConversion(conversionData);
+      return localStorageManager.addConversion({
+        fromUnit: conversionData.fromUnit,
+        toUnit: conversionData.toUnit,
+        fromValue: parseFloat(conversionData.fromValue),
+        toValue: parseFloat(conversionData.toValue),
+        category: 'currency'
+      });
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
+      console.log('✅ Currency conversion saved:', result);
       queryClient.invalidateQueries({ queryKey: ['recent-conversions'] });
+    },
+    onError: (error) => {
+      console.error('❌ Error saving currency conversion:', error);
     },
   });
 
@@ -318,7 +328,7 @@ export function CurrencyConverter() {
                         if (favoriteToRemove) {
                           await localStorageManager.removeFavorite(favoriteToRemove.id);
                           await queryClient.invalidateQueries({ queryKey: ['favorites'] });
-                          alert(t('common.removedFromFavorites', 'Removed from favorites'));
+                          alert(t('common.removedFromFavorites'));
                         }
                       } else {
                         await localStorageManager.addFavorite({
@@ -327,7 +337,7 @@ export function CurrencyConverter() {
                           category: 'currency'
                         });
                         await queryClient.invalidateQueries({ queryKey: ['favorites'] });
-                        alert(t('common.addedToFavorites', 'Added to favorites'));
+                        alert(t('common.addedToFavorites'));
                       }
                     } catch (error) {
                       console.error('Error updating favorites:', error);
@@ -336,7 +346,7 @@ export function CurrencyConverter() {
                   className="flex items-center space-x-2"
                 >
                   <span>{isFavorited ? '⭐' : '☆'}</span>
-                  <span>{isFavorited ? 'En Favoritos' : 'Agregar a Favoritos'}</span>
+                  <span>{isFavorited ? t('common.inFavorites') : t('common.addToFavorites')}</span>
                 </Button>
               </div>
             </div>
