@@ -47,22 +47,24 @@ export function Favorites() {
   const handleGoToConversion = (favorite: any) => {
     console.log('🚀 Navigating to favorite conversion:', favorite);
     
+    // Store the favorite units in localStorage for the target component to read
+    localStorage.setItem('pendingFavoriteNavigation', JSON.stringify({
+      category: favorite.category,
+      fromUnit: favorite.fromUnit,
+      toUnit: favorite.toUnit,
+      timestamp: Date.now()
+    }));
+    
     if (favorite.category === 'currency') {
-      // Navigate to currency converter and set currencies
-      const { setFromCurrency, setToCurrency } = useAppStore.getState();
-      setFromCurrency(favorite.fromUnit);
-      setToCurrency(favorite.toUnit);
+      // Navigate to currency converter
       setCurrentView('currency');
     } else {
-      // Navigate to category converter and set units
-      const { setFromUnit, setToUnit } = useAppStore.getState();
+      // Navigate to category converter
       setCurrentCategory(favorite.category);
-      setFromUnit(favorite.fromUnit);
-      setToUnit(favorite.toUnit);
       setCurrentView('category');
     }
     
-    console.log('✅ Navigation completed with units:', {
+    console.log('✅ Navigation completed with units stored:', {
       category: favorite.category,
       from: favorite.fromUnit,
       to: favorite.toUnit

@@ -32,6 +32,27 @@ export function CurrencyConverter() {
   // 🚀 FIX 1: Estado simplificado para el input (igual que CategoryConverter)
   const [displayAmount, setDisplayAmount] = useState('');
 
+  // Check for pending navigation from favorites
+  useEffect(() => {
+    const pendingNav = localStorage.getItem('pendingFavoriteNavigation');
+    if (pendingNav) {
+      try {
+        const navData = JSON.parse(pendingNav);
+        const isRecent = Date.now() - navData.timestamp < 5000; // 5 seconds
+        
+        if (isRecent && navData.category === 'currency') {
+          console.log('🎯 Setting currencies from favorite navigation:', navData);
+          setFromCurrency(navData.fromUnit);
+          setToCurrency(navData.toUnit);
+          localStorage.removeItem('pendingFavoriteNavigation');
+        }
+      } catch (error) {
+        console.error('Error parsing favorite navigation:', error);
+        localStorage.removeItem('pendingFavoriteNavigation');
+      }
+    }
+  }, [setFromCurrency, setToCurrency]);
+
   // Fetch exchange rates
   const { data: ratesData, isLoading: ratesLoading, error: ratesError } = useQuery({
     queryKey: ['/api/exchange-rates'],

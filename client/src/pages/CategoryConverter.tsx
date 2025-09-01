@@ -26,6 +26,27 @@ export function CategoryConverter() {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [quickReferenceData, setQuickReferenceData] = useState<any[]>([]);
 
+  // Check for pending navigation from favorites
+  useEffect(() => {
+    const pendingNav = localStorage.getItem('pendingFavoriteNavigation');
+    if (pendingNav) {
+      try {
+        const navData = JSON.parse(pendingNav);
+        const isRecent = Date.now() - navData.timestamp < 5000; // 5 seconds
+        
+        if (isRecent && navData.category === currentCategory) {
+          console.log('🎯 Setting units from favorite navigation:', navData);
+          setFromUnit(navData.fromUnit);
+          setToUnit(navData.toUnit);
+          localStorage.removeItem('pendingFavoriteNavigation');
+        }
+      } catch (error) {
+        console.error('Error parsing favorite navigation:', error);
+        localStorage.removeItem('pendingFavoriteNavigation');
+      }
+    }
+  }, [currentCategory, setFromUnit, setToUnit]);
+
   // Fetch favorites to check status
   const { data: favoritesData } = useQuery({
     queryKey: ['favorites'],
