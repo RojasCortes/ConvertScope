@@ -91,10 +91,10 @@ export function RecentConversions() {
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-    if (minutes < 1) return t('time.justNow', 'Just now');
-    if (minutes < 60) return t('time.minutesAgo', `${minutes}m ago`).replace('{{minutes}}', minutes.toString());
-    if (hours < 24) return t('time.hoursAgo', `${hours}h ago`).replace('{{hours}}', hours.toString());
-    if (days < 7) return t('time.daysAgo', `${days}d ago`).replace('{{days}}', days.toString());
+    if (minutes < 1) return t('time.justNow');
+    if (minutes < 60) return t('time.minutesAgo').replace('{{minutes}}', minutes.toString());
+    if (hours < 24) return t('time.hoursAgo').replace('{{hours}}', hours.toString());
+    if (days < 7) return t('time.daysAgo').replace('{{days}}', days.toString());
     return new Date(timestamp).toLocaleDateString();
   };
 
@@ -183,8 +183,8 @@ export function RecentConversions() {
           <div className="flex items-center justify-center space-x-1">
             <span className={`w-2 h-2 rounded-full ${navigator.onLine ? 'bg-green-500' : 'bg-orange-500'}`}></span>
             <span>
-              {navigator.onLine ? t('status.connected', 'Connected') : t('status.offline', 'Offline')} • 
-              {conversions.length} {t('conversions.count', 'conversion')}
+              {navigator.onLine ? t('status.connected') : t('status.offline')} • 
+              {conversions.length} {t('conversions.count')}
               {conversions.length !== 1 ? 's' : ''}
             </span>
           </div>
