@@ -100,27 +100,33 @@ export function CategoryConverter() {
   });
 
   useEffect(() => {
-    if (units.length > 0) {
-      // Force reset units and values when switching categories
+    if (units.length > 0 && (!fromUnit || !toUnit)) {
+      // Only initialize units if they are not already set (e.g., from favorites)
       const firstUnit = units[0].id;
       const secondUnit = units[1]?.id || units[0].id;
       
-      console.log('🔧 Initializing units for category:', currentCategory);
+      console.log('🔧 Initializing units for category (only if not set):', currentCategory);
+      console.log('🔧 Current units:', { from: fromUnit, to: toUnit });
       console.log('🔧 Available units:', units.map(u => u.name));
       
-      setFromUnit(firstUnit);
-      setToUnit(secondUnit);
+      if (!fromUnit) {
+        setFromUnit(firstUnit);
+        console.log('🔧 Set fromUnit:', firstUnit, units[0].name);
+      }
+      if (!toUnit) {
+        setToUnit(secondUnit);
+        console.log('🔧 Set toUnit:', secondUnit, units.find(u => u.id === secondUnit)?.name);
+      }
       
-      // Reset input values when changing categories
-      setFromValue(0);
-      setToValue(0);
-      setDisplayValue('');
-      
-      console.log('🔧 Reset all values for new category');
-      console.log('🔧 Set fromUnit:', firstUnit, units[0].name);
-      console.log('🔧 Set toUnit:', secondUnit, units.find(u => u.id === secondUnit)?.name);
+      // Only reset input values if units were actually initialized
+      if (!fromUnit || !toUnit) {
+        setFromValue(0);
+        setToValue(0);
+        setDisplayValue('');
+        console.log('🔧 Reset values for newly initialized units');
+      }
     }
-  }, [units.length, currentCategory]);
+  }, [units.length, currentCategory, fromUnit, toUnit]);
 
   // ✨ NUEVO: Solo actualizar displayValue cuando NO esté enfocado
   useEffect(() => {
@@ -249,10 +255,12 @@ export function CategoryConverter() {
           variant="ghost"
           onClick={() => {
             // Reset all values when going back
+            setFromUnit('');
+            setToUnit('');
             setFromValue(0);
             setToValue(0);
             setDisplayValue('');
-            console.log('🔄 Reset values on back navigation');
+            console.log('🔄 Reset all units and values on back navigation');
             setCurrentView('home');
           }}
           className="flex items-center space-x-2 text-blue-500 hover:text-blue-600 transition-colors"

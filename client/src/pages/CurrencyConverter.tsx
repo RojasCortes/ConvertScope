@@ -257,7 +257,7 @@ export function CurrencyConverter() {
           variant="ghost"
           onClick={() => {
             // Reset currency values when going back
-            setCurrencyAmount(0);
+            setCurrencyAmount(100); // Reset to default
             setConvertedCurrencyAmount(0);
             setDisplayAmount('');
             console.log('🔄 Reset currency values on back navigation');
