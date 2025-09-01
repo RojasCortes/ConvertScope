@@ -1,54 +1,27 @@
 {
   "version": 2,
-  "rewrites": [
+  "builds": [
     {
-      "source": "/api/exchange-rates",
-      "destination": "/api/exchange-rates"
-    },
-    {
-      "source": "/api/currency-history",
-      "destination": "/api/currency-history"
-    },
-    {
-      "source": "/api/conversions/recent",
-      "destination": "/api/conversions"
-    },
-    {
-      "source": "/api/conversions",
-      "destination": "/api/conversions"
-    },
-    {
-      "source": "/api/favorites/(.*)",
-      "destination": "/api/favorites"
-    },
-    {
-      "source": "/api/favorites",
-      "destination": "/api/favorites"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist/public"
+      }
     }
   ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, PUT, DELETE, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
-        },
-        {
-          "key": "Access-Control-Max-Age",
-          "value": "86400"
-        }
-      ]
+  "functions": {
+    "api/*.ts": {
+      "runtime": "@vercel/node"
     }
-  ],
-  "cleanUrls": true,
-  "trailingSlash": false
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
 }
