@@ -28,7 +28,11 @@ export function CategoryConverter() {
 
   // Fetch favorites to check status
   const { data: favoritesData } = useQuery({
-    queryKey: ['/api/favorites'],
+    queryKey: ['favorites'],
+    queryFn: async () => {
+      const { localStorageManager } = await import('@/lib/localStorage');
+      return localStorageManager.getFavorites();
+    }
   });
 
   // Check if current pair is favorited
@@ -42,10 +46,11 @@ export function CategoryConverter() {
   // Save conversion mutation
   const saveConversionMutation = useMutation({
     mutationFn: async (conversionData: any) => {
-      return apiRequest('POST', '/api/conversions', conversionData);
+      const { localStorageManager } = await import('@/lib/localStorage');
+      return localStorageManager.saveConversion(conversionData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/conversions/recent'] });
+      queryClient.invalidateQueries({ queryKey: ['recent-conversions'] });
     },
   });
 

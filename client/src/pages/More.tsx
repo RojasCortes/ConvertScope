@@ -58,14 +58,7 @@ export function More() {
       action: () => alert(t('more.comingSoon')),
       color: 'text-blue-500'
     },
-    {
-      id: 'history',
-      icon: History,
-      title: t('more.history.title'),
-      description: t('more.history.description'),
-      action: () => setCurrentView('recent-conversions'),
-      color: 'text-green-500'
-    },
+
     {
       id: 'offline',
       icon: Download,

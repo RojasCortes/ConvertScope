@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Globe, Palette, Bell, Info, Star, ExternalLink } from 'lucide-react';
+import { StorageTest } from '@/components/StorageTest';
 
 export function Settings() {
   const { theme, language, setTheme, setLanguage } = useAppStore();
@@ -124,6 +125,16 @@ export function Settings() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Storage Test - Only in development */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              🧪 Test de Almacenamiento
+            </h3>
+            <StorageTest />
+          </div>
+        )}
 
         {/* Actions */}
         <div className="space-y-3">

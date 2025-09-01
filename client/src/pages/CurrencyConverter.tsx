@@ -147,13 +147,15 @@ export function CurrencyConverter() {
     setConvertedCurrencyAmount(newToAmount);
     
     // Save conversion
-    saveConversionMutation.mutate({
-      fromUnit: toCurrency,
-      toUnit: fromCurrency,
-      fromValue: newFromAmount.toString(),
-      toValue: newToAmount.toString(),
-      category: 'currency'
-    });
+    if (newFromAmount > 0) {
+      saveConversionMutation.mutate({
+        fromUnit: toCurrency,
+        toUnit: fromCurrency,
+        fromValue: newFromAmount,
+        toValue: newToAmount,
+        category: 'currency'
+      });
+    }
   };
 
   const getCurrentRate = () => {
@@ -307,22 +309,24 @@ export function CurrencyConverter() {
                   size="sm"
                   onClick={async () => {
                     try {
+                      const { localStorageManager } = await import('@/lib/localStorage');
+                      
                       if (isFavorited) {
                         const favoriteToRemove = favoritesData?.find((fav: any) => 
                           fav.fromUnit === fromCurrency && fav.toUnit === toCurrency && fav.category === 'currency'
                         );
                         if (favoriteToRemove) {
-                          await api.removeFavorite(favoriteToRemove.id);
-                          await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+                          await localStorageManager.removeFavorite(favoriteToRemove.id);
+                          await queryClient.invalidateQueries({ queryKey: ['favorites'] });
                           alert('Removido de favoritos');
                         }
                       } else {
-                        await api.addFavorite({
+                        await localStorageManager.addFavorite({
                           fromUnit: fromCurrency,
                           toUnit: toCurrency,
                           category: 'currency'
                         });
-                        await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+                        await queryClient.invalidateQueries({ queryKey: ['favorites'] });
                         alert('Agregado a favoritos');
                       }
                     } catch (error) {
