@@ -34,7 +34,7 @@ export class LocalStorage {
   
   // === CONVERSIONES ===
   
-  async saveConversion(conversion: Omit<StoredConversion, 'id' | 'createdAt' | 'timestamp'>): Promise<StoredConversion> {
+  async addConversion(conversion: Omit<StoredConversion, 'id' | 'createdAt' | 'timestamp'>): Promise<StoredConversion> {
     const newConversion: StoredConversion = {
       id: Date.now().toString(),
       ...conversion,

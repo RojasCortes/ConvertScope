@@ -116,9 +116,9 @@ export function Home() {
         {error && (
           <div className="text-center py-8">
             <div className="text-4xl mb-2">⚠️</div>
-            <p className="text-red-500 dark:text-red-400">Error al cargar conversiones</p>
+            <p className="text-red-500 dark:text-red-400">{t('common.error')}</p>
             <p className="text-sm text-gray-500 mt-1">
-              Verifica tu conexión a internet
+              {t('common.checkConnection')}
             </p>
           </div>
         )}

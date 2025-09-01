@@ -68,9 +68,9 @@ export function RecentConversions() {
         
         <div className="text-center py-8">
           <div className="text-4xl mb-2">⚠️</div>
-          <p className="text-red-500 dark:text-red-400">Error al cargar conversiones</p>
+          <p className="text-red-500 dark:text-red-400">{t('common.error')}</p>
           <p className="text-sm text-gray-500 mt-1">
-            Verifica tu conexión a internet
+            {t('common.checkConnection')}
           </p>
         </div>
       </div>
@@ -91,10 +91,10 @@ export function RecentConversions() {
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-    if (minutes < 1) return 'Ahora mismo';
-    if (minutes < 60) return `Hace ${minutes}m`;
-    if (hours < 24) return `Hace ${hours}h`;
-    if (days < 7) return `Hace ${days}d`;
+    if (minutes < 1) return t('time.justNow', 'Just now');
+    if (minutes < 60) return t('time.minutesAgo', `${minutes}m ago`).replace('{{minutes}}', minutes.toString());
+    if (hours < 24) return t('time.hoursAgo', `${hours}h ago`).replace('{{hours}}', hours.toString());
+    if (days < 7) return t('time.daysAgo', `${days}d ago`).replace('{{days}}', days.toString());
     return new Date(timestamp).toLocaleDateString();
   };
 
@@ -183,8 +183,9 @@ export function RecentConversions() {
           <div className="flex items-center justify-center space-x-1">
             <span className={`w-2 h-2 rounded-full ${navigator.onLine ? 'bg-green-500' : 'bg-orange-500'}`}></span>
             <span>
-              {navigator.onLine ? 'Conectado' : 'Offline'} • 
-              {conversions.length} conversión{conversions.length !== 1 ? 'es' : ''}
+              {navigator.onLine ? t('status.connected', 'Connected') : t('status.offline', 'Offline')} • 
+              {conversions.length} {t('conversions.count', 'conversion')}
+              {conversions.length !== 1 ? 's' : ''}
             </span>
           </div>
         </div>

@@ -174,6 +174,17 @@ export const translations = {
       noRecent: 'No hay conversiones recientes',
       noRecentDescription: 'Empieza a convertir para ver tu historial aquí',
       startConverting: 'Empezar a Convertir',
+      count: 'conversión',
+    },
+    time: {
+      justNow: 'Ahora mismo',
+      minutesAgo: 'Hace {{minutes}}m',
+      hoursAgo: 'Hace {{hours}}h',
+      daysAgo: 'Hace {{days}}d',
+    },
+    status: {
+      connected: 'Conectado',
+      offline: 'Offline',
     },
     ads: {
       space: 'Espacio publicitario',
@@ -295,6 +306,17 @@ export const translations = {
       noRecent: 'No recent conversions',
       noRecentDescription: 'Start converting to see your history here',
       startConverting: 'Start Converting',
+      count: 'conversion',
+    },
+    time: {
+      justNow: 'Just now',
+      minutesAgo: '{{minutes}}m ago',
+      hoursAgo: '{{hours}}h ago',
+      daysAgo: '{{days}}d ago',
+    },
+    status: {
+      connected: 'Connected',
+      offline: 'Offline',
     },
     settings: {
       language: {

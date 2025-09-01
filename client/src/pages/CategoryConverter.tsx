@@ -47,7 +47,13 @@ export function CategoryConverter() {
   const saveConversionMutation = useMutation({
     mutationFn: async (conversionData: any) => {
       const { localStorageManager } = await import('@/lib/localStorage');
-      return localStorageManager.saveConversion(conversionData);
+      return localStorageManager.addConversion({
+        fromUnit: conversionData.fromUnit,
+        toUnit: conversionData.toUnit,
+        fromValue: parseFloat(conversionData.fromValue),
+        toValue: parseFloat(conversionData.toValue),
+        category: conversionData.category
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['recent-conversions'] });
