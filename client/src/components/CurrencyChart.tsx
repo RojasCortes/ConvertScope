@@ -115,7 +115,7 @@ export function CurrencyChart({ baseCurrency, targetCurrency, period, data }: Cu
         chartInstanceRef.current.destroy();
       }
     };
-  }, [historicalData, baseCurrency, targetCurrency, data]);
+  }, [historicalData, baseCurrency, targetCurrency, data, period]);
 
   // Always show chart (with real data or sample data)
   // if (!historicalData || historicalData.length === 0) {

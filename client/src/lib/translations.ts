@@ -89,7 +89,7 @@ export const translations = {
       enterAmount: 'Ingresa un monto',
       lastUpdate: 'Última actualización',
       timeAgo: 'hace 2 min',
-      strengthIndex: 'Índice de Fuerza',
+      strengthIndex: 'Índice de Fortaleza',
       historicalChart: 'Gráfico Histórico',
       basicPrediction: 'Predicción Básica',
       bullishTrend: 'Tendencia Alcista',
@@ -111,6 +111,7 @@ export const translations = {
       empty: {
         title: 'No tienes favoritos',
         description: 'Agrega conversiones frecuentes a favoritos para acceso rápido',
+        instruction: 'Ve a cualquier convertidor y presiona ❤️ para agregar favoritos'
       },
     },
     settings: {
@@ -180,6 +181,8 @@ export const translations = {
       noRecentDescription: 'Empieza a convertir para ver tu historial aquí',
       startConverting: 'Empezar a Convertir',
       count: 'conversión',
+      saved: 'guardadas',
+      favorite: 'favorito',
     },
     time: {
       justNow: 'Ahora mismo',
@@ -317,6 +320,8 @@ export const translations = {
       noRecentDescription: 'Start converting to see your history here',
       startConverting: 'Start Converting',
       count: 'conversion',
+      saved: 'saved',
+      favorite: 'favorite',
     },
     time: {
       justNow: 'Just now',
