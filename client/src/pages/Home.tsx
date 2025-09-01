@@ -7,11 +7,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { AdSpace } from '@/components/AdSpace';
 import { Search, TrendingUp } from 'lucide-react';
-import { categories } from '@/lib/conversions';
+import { useLocalizedCategories } from '@/lib/dynamicUnits';
 import { api, type Conversion } from '@/lib/api'; // ¡USAR TU API con tipos!
 
 export function Home() {
   const { setCurrentView, setCurrentCategory } = useAppStore();
+  const categories = useLocalizedCategories();
   const { t } = useTranslation();
 
   // Usar almacenamiento local para conversiones recientes

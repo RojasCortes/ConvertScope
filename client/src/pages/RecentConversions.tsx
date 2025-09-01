@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Clock, TrendingUp } from 'lucide-react';
 import { useAppStore } from '@/stores/useAppStore';
-import { categories } from '@/lib/conversions';
+import { useLocalizedCategories } from '@/lib/dynamicUnits';
 
 export function RecentConversions() {
   const { t } = useTranslation();
@@ -76,6 +76,8 @@ export function RecentConversions() {
       </div>
     );
   }
+
+  const categories = useLocalizedCategories();
 
   // Función para obtener el emoji de la categoría
   const getCategoryEmoji = (category: string) => {

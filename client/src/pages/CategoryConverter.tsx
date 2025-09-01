@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AdSpace } from '@/components/AdSpace';
 import { ArrowLeft, ArrowUpDown } from 'lucide-react';
-import { categories, getUnitsForCategory, convertValue } from '@/lib/conversions';
+import { convertValue } from '@/lib/conversions';
+import { useLocalizedCategories, getLocalizedUnitsForCategory } from '@/lib/dynamicUnits';
 import { apiRequest } from '@/lib/queryClient';
 
 export function CategoryConverter() {
@@ -80,8 +81,9 @@ export function CategoryConverter() {
     fav.fromUnit === fromUnit && fav.toUnit === toUnit && fav.category === currentCategory
   );
 
+  const categories = useLocalizedCategories();
   const category = categories.find(c => c.id === currentCategory);
-  const units = getUnitsForCategory(currentCategory);
+  const units = getLocalizedUnitsForCategory(currentCategory);
 
   // Save conversion mutation
   const saveConversionMutation = useMutation({

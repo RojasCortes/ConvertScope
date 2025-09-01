@@ -4,13 +4,14 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { HeartOff, Star, ArrowRight } from 'lucide-react';
-import { categories } from '@/lib/conversions';
+import { useLocalizedCategories } from '@/lib/dynamicUnits';
 import { useAppStore } from '@/stores/useAppStore';
 
 export function Favorites() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { setCurrentView, setCurrentCategory } = useAppStore();
+  const categories = useLocalizedCategories();
 
   // Usar almacenamiento local para favoritos
   const { data: favorites = [], isLoading, error } = useQuery({

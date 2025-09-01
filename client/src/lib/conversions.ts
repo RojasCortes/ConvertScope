@@ -14,36 +14,36 @@ export interface Unit {
 }
 
 export const categories: Category[] = [
-  { id: 'currency', emoji: '💰', name: 'Divisas', description: '170+ monedas' },
-  { id: 'length', emoji: '📏', name: 'Longitud', description: 'Metros, pies, etc.' },
-  { id: 'weight', emoji: '⚖️', name: 'Peso', description: 'Kg, libras, etc.' },
-  { id: 'temperature', emoji: '🌡️', name: 'Temperatura', description: '°C, °F, K' },
-  { id: 'time', emoji: '⏱️', name: 'Tiempo', description: 'Horas, días, etc.' },
-  { id: 'speed', emoji: '🚗', name: 'Velocidad', description: 'km/h, mph, etc.' },
-  { id: 'data', emoji: '📱', name: 'Datos', description: 'MB, GB, TB' },
-  { id: 'energy', emoji: '⚡', name: 'Energía', description: 'Calorías, julios' },
-  { id: 'area', emoji: '📐', name: 'Área', description: 'm², hectáreas' },
+  { id: 'currency', emoji: '💰', name: 'Currency', description: '170+ currencies' },
+  { id: 'length', emoji: '📏', name: 'Length', description: 'Meters, feet, etc.' },
+  { id: 'weight', emoji: '⚖️', name: 'Weight', description: 'Kg, pounds, etc.' },
+  { id: 'temperature', emoji: '🌡️', name: 'Temperature', description: '°C, °F, K' },
+  { id: 'time', emoji: '⏱️', name: 'Time', description: 'Hours, days, etc.' },
+  { id: 'speed', emoji: '🚗', name: 'Speed', description: 'km/h, mph, etc.' },
+  { id: 'data', emoji: '📱', name: 'Data', description: 'MB, GB, TB' },
+  { id: 'energy', emoji: '⚡', name: 'Energy', description: 'Calories, joules' },
+  { id: 'area', emoji: '📐', name: 'Area', description: 'm², hectares' },
 ];
 
 export const units: Unit[] = [
   // Length
-  { id: 'm', name: 'Metro', symbol: 'm', toBase: 1, category: 'length' },
-  { id: 'km', name: 'Kilómetro', symbol: 'km', toBase: 1000, category: 'length' },
-  { id: 'cm', name: 'Centímetro', symbol: 'cm', toBase: 0.01, category: 'length' },
-  { id: 'mm', name: 'Milímetro', symbol: 'mm', toBase: 0.001, category: 'length' },
-  { id: 'ft', name: 'Pie', symbol: 'ft', toBase: 0.3048, category: 'length' },
-  { id: 'in', name: 'Pulgada', symbol: 'in', toBase: 0.0254, category: 'length' },
-  { id: 'yd', name: 'Yarda', symbol: 'yd', toBase: 0.9144, category: 'length' },
-  { id: 'mi', name: 'Milla', symbol: 'mi', toBase: 1609.344, category: 'length' },
-  { id: 'nmi', name: 'Milla náutica', symbol: 'nmi', toBase: 1852, category: 'length' },
+  { id: 'm', name: 'Meter', symbol: 'm', toBase: 1, category: 'length' },
+  { id: 'km', name: 'Kilometer', symbol: 'km', toBase: 1000, category: 'length' },
+  { id: 'cm', name: 'Centimeter', symbol: 'cm', toBase: 0.01, category: 'length' },
+  { id: 'mm', name: 'Millimeter', symbol: 'mm', toBase: 0.001, category: 'length' },
+  { id: 'ft', name: 'Foot', symbol: 'ft', toBase: 0.3048, category: 'length' },
+  { id: 'in', name: 'Inch', symbol: 'in', toBase: 0.0254, category: 'length' },
+  { id: 'yd', name: 'Yard', symbol: 'yd', toBase: 0.9144, category: 'length' },
+  { id: 'mi', name: 'Mile', symbol: 'mi', toBase: 1609.344, category: 'length' },
+  { id: 'nmi', name: 'Nautical mile', symbol: 'nmi', toBase: 1852, category: 'length' },
 
   // Weight
-  { id: 'kg', name: 'Kilogramo', symbol: 'kg', toBase: 1, category: 'weight' },
-  { id: 'g', name: 'Gramo', symbol: 'g', toBase: 0.001, category: 'weight' },
-  { id: 'mg', name: 'Miligramo', symbol: 'mg', toBase: 0.000001, category: 'weight' },
-  { id: 'lb', name: 'Libra', symbol: 'lb', toBase: 0.453592, category: 'weight' },
-  { id: 'oz', name: 'Onza', symbol: 'oz', toBase: 0.0283495, category: 'weight' },
-  { id: 't', name: 'Tonelada', symbol: 't', toBase: 1000, category: 'weight' },
+  { id: 'kg', name: 'Kilogram', symbol: 'kg', toBase: 1, category: 'weight' },
+  { id: 'g', name: 'Gram', symbol: 'g', toBase: 0.001, category: 'weight' },
+  { id: 'mg', name: 'Milligram', symbol: 'mg', toBase: 0.000001, category: 'weight' },
+  { id: 'lb', name: 'Pound', symbol: 'lb', toBase: 0.453592, category: 'weight' },
+  { id: 'oz', name: 'Ounce', symbol: 'oz', toBase: 0.0283495, category: 'weight' },
+  { id: 't', name: 'Ton', symbol: 't', toBase: 1000, category: 'weight' },
   { id: 'st', name: 'Stone', symbol: 'st', toBase: 6.35029, category: 'weight' },
 
   // Temperature (special case - requires different conversion logic)
@@ -77,11 +77,11 @@ export const units: Unit[] = [
   { id: 'bit', name: 'Bit', symbol: 'bit', toBase: 0.125, category: 'data' },
 
   // Energy
-  { id: 'j', name: 'Julio', symbol: 'J', toBase: 1, category: 'energy' },
-  { id: 'kj', name: 'Kilojulio', symbol: 'kJ', toBase: 1000, category: 'energy' },
-  { id: 'cal', name: 'Caloría', symbol: 'cal', toBase: 4.184, category: 'energy' },
-  { id: 'kcal', name: 'Kilocaloría', symbol: 'kcal', toBase: 4184, category: 'energy' },
-  { id: 'kwh', name: 'Kilovatio-hora', symbol: 'kWh', toBase: 3600000, category: 'energy' },
+  { id: 'j', name: 'Joule', symbol: 'J', toBase: 1, category: 'energy' },
+  { id: 'kj', name: 'Kilojoule', symbol: 'kJ', toBase: 1000, category: 'energy' },
+  { id: 'cal', name: 'Calorie', symbol: 'cal', toBase: 4.184, category: 'energy' },
+  { id: 'kcal', name: 'Kilocalorie', symbol: 'kcal', toBase: 4184, category: 'energy' },
+  { id: 'kwh', name: 'Kilowatt-hour', symbol: 'kWh', toBase: 3600000, category: 'energy' },
   { id: 'btu', name: 'BTU', symbol: 'BTU', toBase: 1055.06, category: 'energy' },
 
   // Area
