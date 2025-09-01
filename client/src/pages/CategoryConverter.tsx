@@ -66,18 +66,20 @@ export function CategoryConverter() {
 
   useEffect(() => {
     if (units.length > 0) {
-      // Always ensure both units are set when units are available
-      if (!fromUnit) {
-        setFromUnit(units[0].id);
-        console.log('🔧 Set fromUnit:', units[0].id, units[0].name);
-      }
-      if (!toUnit) {
-        const toUnitId = units[1]?.id || units[0].id;
-        setToUnit(toUnitId);
-        console.log('🔧 Set toUnit:', toUnitId, units.find(u => u.id === toUnitId)?.name);
-      }
+      // Force reset units when switching categories
+      const firstUnit = units[0].id;
+      const secondUnit = units[1]?.id || units[0].id;
+      
+      console.log('🔧 Initializing units for category:', currentCategory);
+      console.log('🔧 Available units:', units.map(u => u.name));
+      
+      setFromUnit(firstUnit);
+      setToUnit(secondUnit);
+      
+      console.log('🔧 Set fromUnit:', firstUnit, units[0].name);
+      console.log('🔧 Set toUnit:', secondUnit, units.find(u => u.id === secondUnit)?.name);
     }
-  }, [units.length, fromUnit, toUnit, setFromUnit, setToUnit]);
+  }, [units.length, currentCategory]);
 
   // ✨ NUEVO: Solo actualizar displayValue cuando NO esté enfocado
   useEffect(() => {
@@ -109,7 +111,7 @@ export function CategoryConverter() {
     } else {
       setToValue(0);
     }
-  }, [fromValue, fromUnit, toUnit, currentCategory, setToValue]);
+  }, [fromValue, fromUnit, toUnit, currentCategory]);
 
   useEffect(() => {
     // Generate quick reference table
