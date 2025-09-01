@@ -10,12 +10,12 @@ export function RecentConversions() {
   const { t } = useTranslation();
   const { setCurrentView } = useAppStore();
 
-  // Usar sistema híbrido para conversiones recientes
+  // Usar almacenamiento local para conversiones recientes
   const { data: conversions = [], isLoading, error } = useQuery({
     queryKey: ['recent-conversions'],
     queryFn: async () => {
-      const { hybridStorage } = await import('@/lib/storage');
-      return hybridStorage.getRecentConversions(15);
+      const { localStorageManager } = await import('@/lib/localStorage');
+      return localStorageManager.getRecentConversions(15);
     },
     staleTime: 60 * 1000, // 1 minuto cache
     retry: 2
@@ -80,7 +80,7 @@ export function RecentConversions() {
   // Función para obtener el emoji de la categoría
   const getCategoryEmoji = (category: string) => {
     const cat = categories.find(c => c.id === category);
-    return cat?.icon || '🔄';
+    return cat?.emoji || '🔄';
   };
 
   // Función para formatear fecha relativa

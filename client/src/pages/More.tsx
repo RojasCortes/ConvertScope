@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 export function More() {
-  const { language } = useAppStore();
+  const { language, setCurrentView } = useAppStore();
   const { t } = useTranslation();
 
   const handleShareApp = () => {

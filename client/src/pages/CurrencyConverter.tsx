@@ -50,8 +50,11 @@ export function CurrencyConverter() {
 
   // Fetch favorites to check status
   const { data: favoritesData } = useQuery({
-    queryKey: ['/api/favorites'],
-    queryFn: () => api.getFavorites()
+    queryKey: ['favorites'],
+    queryFn: async () => {
+      const { localStorageManager } = await import('@/lib/localStorage');
+      return localStorageManager.getFavorites();
+    }
   });
 
   // Check if current pair is favorited
@@ -61,11 +64,11 @@ export function CurrencyConverter() {
 
   const saveConversionMutation = useMutation({
     mutationFn: async (conversionData: any) => {
-      const { hybridStorage } = await import('@/lib/storage');
-      return hybridStorage.saveConversion(conversionData);
+      const { localStorageManager } = await import('@/lib/localStorage');
+      return localStorageManager.saveConversion(conversionData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/conversions/recent'] });
+      queryClient.invalidateQueries({ queryKey: ['recent-conversions'] });
     },
   });
 

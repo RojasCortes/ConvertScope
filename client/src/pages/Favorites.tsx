@@ -11,23 +11,23 @@ export function Favorites() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  // Usar sistema híbrido para favoritos
+  // Usar almacenamiento local para favoritos
   const { data: favorites = [], isLoading, error } = useQuery({
     queryKey: ['favorites'],
     queryFn: async () => {
-      const { hybridStorage } = await import('@/lib/storage');
-      return hybridStorage.getFavorites();
+      const { localStorageManager } = await import('@/lib/localStorage');
+      return localStorageManager.getFavorites();
     },
     staleTime: 2 * 60 * 1000,
     retry: 3
   });
 
-  // Usar sistema híbrido para eliminar favoritos
+  // Usar almacenamiento local para eliminar favoritos
   const removeFavoriteMutation = useMutation({
     mutationFn: async (id: string) => {
       console.log('Removing favorite with ID:', id);
-      const { hybridStorage } = await import('@/lib/storage');
-      return hybridStorage.removeFavorite(id);
+      const { localStorageManager } = await import('@/lib/localStorage');
+      return localStorageManager.removeFavorite(id);
     },
     onSuccess: (data, id) => {
       console.log('Favorite removed successfully:', id);

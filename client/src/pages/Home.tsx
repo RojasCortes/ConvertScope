@@ -14,11 +14,14 @@ export function Home() {
   const { setCurrentView, setCurrentCategory } = useAppStore();
   const { t } = useTranslation();
 
-  // ✅ CORREGIDO: Usar api.getRecentConversions() con tipos
-  const { data: recentConversions = [], isLoading, error } = useQuery<Conversion[]>({
+  // Usar almacenamiento local para conversiones recientes
+  const { data: recentConversions = [], isLoading, error } = useQuery({
     queryKey: ['recent-conversions'],
-    queryFn: () => api.getRecentConversions(5),
-    staleTime: 5 * 60 * 1000, // 5 minutos cache
+    queryFn: async () => {
+      const { localStorageManager } = await import('@/lib/localStorage');
+      return localStorageManager.getRecentConversions(5);
+    },
+    staleTime: 5 * 60 * 1000,
     retry: 3,
     retryDelay: 1000
   });
