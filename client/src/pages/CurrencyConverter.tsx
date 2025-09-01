@@ -318,7 +318,7 @@ export function CurrencyConverter() {
                         if (favoriteToRemove) {
                           await localStorageManager.removeFavorite(favoriteToRemove.id);
                           await queryClient.invalidateQueries({ queryKey: ['favorites'] });
-                          alert('Removido de favoritos');
+                          alert(t('common.removedFromFavorites', 'Removed from favorites'));
                         }
                       } else {
                         await localStorageManager.addFavorite({
@@ -327,7 +327,7 @@ export function CurrencyConverter() {
                           category: 'currency'
                         });
                         await queryClient.invalidateQueries({ queryKey: ['favorites'] });
-                        alert('Agregado a favoritos');
+                        alert(t('common.addedToFavorites', 'Added to favorites'));
                       }
                     } catch (error) {
                       console.error('Error updating favorites:', error);

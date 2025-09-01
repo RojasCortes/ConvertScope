@@ -11,6 +11,16 @@ export const translations = {
       loading: 'Cargando...',
       advanced: 'Avanzado',
       categoryNotFound: 'Categoría no encontrada',
+      favorite: 'Favorito',
+      add: 'Agregar',
+      addToFavorites: 'Agregar a Favoritos',
+      inFavorites: 'En Favoritos',
+      addedToFavorites: 'Agregado a favoritos',
+      removedFromFavorites: 'Removido de favoritos',
+      alreadyInFavorites: 'Ya está en favoritos',
+      error: 'Error',
+      checkConnection: 'Verifica tu conexión a internet',
+      retry: 'Reintentar',
     },
     search: {
       title: 'Buscar',
@@ -181,6 +191,16 @@ export const translations = {
       loading: 'Loading...',
       advanced: 'Advanced',
       categoryNotFound: 'Category not found',
+      favorite: 'Favorite',
+      add: 'Add',
+      addToFavorites: 'Add to Favorites',
+      inFavorites: 'In Favorites',
+      addedToFavorites: 'Added to favorites',
+      removedFromFavorites: 'Removed from favorites',
+      alreadyInFavorites: 'Already in favorites',
+      error: 'Error',
+      checkConnection: 'Check your internet connection',
+      retry: 'Retry',
     },
     search: {
       title: 'Search',
@@ -266,7 +286,15 @@ export const translations = {
       empty: {
         title: 'No favorites yet',
         description: 'Add frequent conversions to favorites for quick access',
+        instruction: 'Go to any converter and tap the ❤️ to add favorites'
       },
+    },
+    conversions: {
+      recent: 'Recent Conversions',
+      recentDescription: 'History of your most recent conversions',
+      noRecent: 'No recent conversions',
+      noRecentDescription: 'Start converting to see your history here',
+      startConverting: 'Start Converting',
     },
     settings: {
       language: {

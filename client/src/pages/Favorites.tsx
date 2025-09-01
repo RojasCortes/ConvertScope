@@ -66,15 +66,17 @@ export function Favorites() {
         </h2>
         <div className="text-center py-8">
           <div className="text-4xl mb-2">⚠️</div>
-          <p className="text-red-500 dark:text-red-400">Error al cargar favoritos</p>
+          <p className="text-red-500 dark:text-red-400">
+            {t('common.error', 'Error loading favorites')}
+          </p>
           <p className="text-sm text-gray-500 mt-1">
-            Verifica tu conexión a internet
+            {t('common.checkConnection', 'Check your internet connection')}
           </p>
           <Button 
             onClick={() => queryClient.invalidateQueries({ queryKey: ['favorites'] })}
             className="mt-4"
           >
-            Reintentar
+            {t('common.retry', 'Retry')}
           </Button>
         </div>
       </div>
@@ -136,7 +138,7 @@ export function Favorites() {
           {/* ✅ AÑADIDO: Información adicional */}
           <div className="text-center pt-4">
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              {favorites.length} favorito{favorites.length !== 1 ? 's' : ''} guardado{favorites.length !== 1 ? 's' : ''}
+              {favorites.length} favorite{favorites.length !== 1 ? 's' : ''} saved
             </p>
           </div>
         </div>
@@ -150,7 +152,7 @@ export function Favorites() {
             {t('favorites.empty.description')}
           </p>
           <p className="text-sm text-gray-400 dark:text-gray-500">
-            💡 Ve a cualquier conversor y toca el ❤️ para agregar favoritos
+            💡 {t('favorites.empty.instruction')}
           </p>
         </div>
       )}

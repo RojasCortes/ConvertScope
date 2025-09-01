@@ -280,29 +280,28 @@ export function CategoryConverter() {
                           fav.fromUnit === fromUnit && fav.toUnit === toUnit && fav.category === currentCategory
                         );
                         if (favoriteToRemove) {
-                          await fetch(`/api/favorites/${favoriteToRemove.id}`, {
-                            method: 'DELETE',
-                          });
-                          await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
-                          alert('Removido de favoritos');
+                          const { localStorageManager } = await import('@/lib/localStorage');
+                          await localStorageManager.removeFavorite(favoriteToRemove.id);
+                          await queryClient.invalidateQueries({ queryKey: ['favorites'] });
+                          alert(t('common.removedFromFavorites', 'Removed from favorites'));
                         }
                       } else {
-                        // Add to favorites
-                        const response = await fetch('/api/favorites', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({
+                        // Add to favorites using localStorage
+                        const { localStorageManager } = await import('@/lib/localStorage');
+                        try {
+                          await localStorageManager.addFavorite({
                             fromUnit: fromUnit,
                             toUnit: toUnit,
                             category: currentCategory
-                          }),
-                        });
-                        
-                        if (response.ok) {
-                          await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
-                          alert('Agregado a favoritos');
-                        } else if (response.status === 409) {
-                          alert('Ya está en favoritos');
+                          });
+                          await queryClient.invalidateQueries({ queryKey: ['favorites'] });
+                          alert(t('common.addedToFavorites', 'Added to favorites'));
+                        } catch (error: any) {
+                          if (error.message === 'Favorite already exists') {
+                            alert(t('common.alreadyInFavorites', 'Already in favorites'));
+                          } else {
+                            throw error;
+                          }
                         }
                       }
                     } catch (error) {
@@ -312,7 +311,7 @@ export function CategoryConverter() {
                   className="flex items-center space-x-2"
                 >
                   <span>{isFavorited ? '⭐' : '☆'}</span>
-                  <span>{isFavorited ? 'En Favoritos' : 'Agregar a Favoritos'}</span>
+                  <span>{isFavorited ? t('common.inFavorites', 'In Favorites') : t('common.addToFavorites', 'Add to Favorites')}</span>
                 </Button>
               </div>
             </div>
