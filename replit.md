@@ -8,6 +8,7 @@ ConvertScope is a Progressive Web Application (PWA) built as a universal convert
 
 Preferred communication style: Simple, everyday language.
 Project documentation: User requested comprehensive architecture diagram and technology stack information - documented in ARQUITECTURA_TECNOLOGIAS.md
+Capacitor APK: User confirmed they use Capacitor to generate APK on their PC - functionality preserved and documented in CAPACITOR_APK_GUIDE.md
 
 ## Recent Changes (January 2025)
 

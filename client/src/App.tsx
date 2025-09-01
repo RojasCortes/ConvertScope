@@ -48,10 +48,25 @@ function AppRoutes() {
 
 function App() {
   useEffect(() => {
-    // Only register service worker in production
-    if (import.meta.env.PROD) {
-      registerServiceWorker();
-    }
+    // Registrar service worker de forma segura
+    const setupApp = async () => {
+      try {
+        // @ts-ignore - Verificar Capacitor
+        const isNative = typeof window !== 'undefined' && window.Capacitor?.isNativePlatform();
+        
+        // Solo registrar service worker en producción web (no en apps nativas)
+        if (import.meta.env.PROD && !isNative) {
+          registerServiceWorker();
+        }
+      } catch (error) {
+        // Fallback para web si hay errores
+        if (import.meta.env.PROD) {
+          registerServiceWorker();
+        }
+      }
+    };
+
+    setupApp();
   }, []);
 
   return (

@@ -1,4 +1,3 @@
-// capacitor.config.ts - SIN INTERCEPTORS
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
@@ -6,28 +5,28 @@ const config: CapacitorConfig = {
   appName: 'ConvertScope',
   webDir: 'dist/public',
   server: {
-    allowNavigation: [
-      'https://convert-scope.vercel.app/*',
-      'https://*.vercel.app/*',
-      'https://api.exchangerate-api.com/*',
-      'https://openexchangerates.org/*'
-    ],
-    cleartext: true,
     androidScheme: 'https'
   },
   plugins: {
-    // ✅ DESACTIVAR CapacitorHttp - usar solo fetch
-    CapacitorHttp: {
-      enabled: false
+    StatusBar: {
+      backgroundColor: '#1e293b',
+      style: 'light',
+      overlaysWebView: false
     },
-    CapacitorCookies: {
+    SplashScreen: {
+      launchShowDuration: 2000,
+      backgroundColor: '#1e293b',
+      androidSplashResourceName: 'splash',
+      androidScaleType: 'CENTER_CROP',
+      showSpinner: true,
+      spinnerColor: '#3b82f6'
+    },
+    Network: {
+      enabled: true
+    },
+    Haptics: {
       enabled: true
     }
-  },
-  android: {
-    allowMixedContent: true,
-    captureInput: true,
-    webContentsDebuggingEnabled: true
   }
 };
 

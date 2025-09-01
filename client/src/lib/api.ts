@@ -1,13 +1,42 @@
 // client/src/lib/api.ts - CON MANEJO DE ERRORES HTML
 
-// Detectar si estamos en desarrollo local o producción
+// Detectar plataforma y entorno de forma segura
+let isNative = false;
+let platform = 'web';
+
+// Función para detectar Capacitor de forma segura
+function detectCapacitor() {
+  try {
+    // @ts-ignore - Importar Capacitor solo si está disponible
+    if (typeof window !== 'undefined' && window.Capacitor) {
+      return window.Capacitor;
+    }
+    return null;
+  } catch (error) {
+    return null;
+  }
+}
+
+const Capacitor = detectCapacitor();
+if (Capacitor) {
+  isNative = Capacitor.isNativePlatform();
+  platform = Capacitor.getPlatform();
+  console.log('Capacitor detected:', { isNative, platform });
+} else {
+  console.log('Capacitor not available, using web mode');
+}
+
 const isDev = window.location.hostname === 'localhost' || window.location.hostname.includes('replit');
 
-export const API_BASE_URL = isDev 
-  ? '/api'
-  : 'https://convert-scope.vercel.app/api';
+export const API_BASE_URL = isNative 
+  ? 'https://convert-scope.vercel.app/api'
+  : isDev 
+    ? '/api'
+    : 'https://convert-scope.vercel.app/api';
 
 console.log('🔍 API Configuration:');
+console.log('- Platform:', platform);
+console.log('- IsNative:', isNative);
 console.log('- Environment:', isDev ? 'development' : 'production');
 console.log('- API_BASE_URL:', API_BASE_URL);
 
