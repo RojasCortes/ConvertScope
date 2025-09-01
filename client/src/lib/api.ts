@@ -1,15 +1,14 @@
 // client/src/lib/api.ts - CON MANEJO DE ERRORES HTML
-import { Capacitor } from '@capacitor/core';
 
-const isNative = Capacitor.isNativePlatform();
+// Detectar si estamos en desarrollo local o producción
+const isDev = window.location.hostname === 'localhost' || window.location.hostname.includes('replit');
 
-export const API_BASE_URL = isNative 
-  ? 'https://convert-scope.vercel.app/api'
-  : '/api';
+export const API_BASE_URL = isDev 
+  ? '/api'
+  : 'https://convert-scope.vercel.app/api';
 
 console.log('🔍 API Configuration:');
-console.log('- Platform:', Capacitor.getPlatform());
-console.log('- IsNative:', isNative);
+console.log('- Environment:', isDev ? 'development' : 'production');
 console.log('- API_BASE_URL:', API_BASE_URL);
 
 export interface ExchangeRatesResponse {
