@@ -65,11 +65,19 @@ export function CategoryConverter() {
   });
 
   useEffect(() => {
-    if (units.length > 0 && (!fromUnit || !toUnit)) {
-      if (!fromUnit) setFromUnit(units[0].id);
-      if (!toUnit) setToUnit(units[1]?.id || units[0].id);
+    if (units.length > 0) {
+      // Always ensure both units are set when units are available
+      if (!fromUnit) {
+        setFromUnit(units[0].id);
+        console.log('🔧 Set fromUnit:', units[0].id, units[0].name);
+      }
+      if (!toUnit) {
+        const toUnitId = units[1]?.id || units[0].id;
+        setToUnit(toUnitId);
+        console.log('🔧 Set toUnit:', toUnitId, units.find(u => u.id === toUnitId)?.name);
+      }
     }
-  }, [units, fromUnit, toUnit, setFromUnit, setToUnit]);
+  }, [units.length, fromUnit, toUnit, setFromUnit, setToUnit]);
 
   // ✨ NUEVO: Solo actualizar displayValue cuando NO esté enfocado
   useEffect(() => {

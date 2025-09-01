@@ -120,8 +120,24 @@ export function CurrencyConverter() {
       const converted = convertCurrency(currencyAmount, fromCurrency, toCurrency);
       console.log('Conversion result:', converted);
       setConvertedCurrencyAmount(converted);
+      
+      // Auto-save currency conversion after a delay
+      if (currencyAmount > 0 && converted > 0) {
+        const timer = setTimeout(() => {
+          console.log('💾 Saving currency conversion:', { fromCurrency, toCurrency, currencyAmount, converted });
+          saveConversionMutation.mutate({
+            fromUnit: fromCurrency,
+            toUnit: toCurrency,
+            fromValue: currencyAmount.toString(),
+            toValue: converted.toString(),
+            category: 'currency'
+          });
+        }, 2000);
+        
+        return () => clearTimeout(timer);
+      }
     }
-  }, [currencyAmount, fromCurrency, toCurrency, exchangeRates, convertCurrency, setConvertedCurrencyAmount]);
+  }, [currencyAmount, fromCurrency, toCurrency, exchangeRates, convertCurrency, setConvertedCurrencyAmount, saveConversionMutation]);
 
   // 🚀 FIX 3: Función de manejo simplificada (igual que CategoryConverter)
   const handleAmountChange = (value: string) => {
@@ -309,7 +325,7 @@ export function CurrencyConverter() {
                 </span>
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                {t('currency.lastUpdate')}: {ratesLoading ? t('common.loading') : t('currency.timeAgo')}
+                {t('currency.lastUpdate')}: {ratesLoading ? t('common.loading') : 'Just now'}
               </div>
               
               {/* Add to Favorites Button */}
