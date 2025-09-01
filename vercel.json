@@ -1,26 +1,30 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist/public"
-      }
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/public",
+  "framework": "vite",
+  "installCommand": "npm install",
+  "functions": {
+    "api/exchange-rates.ts": {
+      "runtime": "@vercel/node"
     },
-    {
-      "src": "api/*.ts",
-      "use": "@vercel/node"
+    "api/currency-history.ts": {
+      "runtime": "@vercel/node"
+    },
+    "api/conversions.ts": {
+      "runtime": "@vercel/node"
+    },
+    "api/favorites.ts": {
+      "runtime": "@vercel/node"
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
