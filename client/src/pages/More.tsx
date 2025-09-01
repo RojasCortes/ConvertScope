@@ -63,7 +63,7 @@ export function More() {
       icon: History,
       title: t('more.history.title'),
       description: t('more.history.description'),
-      action: () => alert(t('more.comingSoon')),
+      action: () => setCurrentView('recent-conversions'),
       color: 'text-green-500'
     },
     {

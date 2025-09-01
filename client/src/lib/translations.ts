@@ -158,6 +158,13 @@ export const translations = {
         description: 'Ayuda a mantener la app gratuita',
       },
     },
+    conversions: {
+      recent: 'Conversiones Recientes',
+      recentDescription: 'Historial de tus conversiones más recientes',
+      noRecent: 'No hay conversiones recientes',
+      noRecentDescription: 'Empieza a convertir para ver tu historial aquí',
+      startConverting: 'Empezar a Convertir',
+    },
     ads: {
       space: 'Espacio publicitario',
     },

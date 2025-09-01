@@ -61,7 +61,8 @@ export function CurrencyConverter() {
 
   const saveConversionMutation = useMutation({
     mutationFn: async (conversionData: any) => {
-      return api.saveConversion(conversionData);
+      const { hybridStorage } = await import('@/lib/storage');
+      return hybridStorage.saveConversion(conversionData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/conversions/recent'] });

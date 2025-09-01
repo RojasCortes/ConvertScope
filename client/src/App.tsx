@@ -12,6 +12,7 @@ import { CategoryConverter } from '@/pages/CategoryConverter';
 import { Favorites } from '@/pages/Favorites';
 import { Settings } from '@/pages/Settings';
 import { More } from '@/pages/More';
+import { RecentConversions } from '@/pages/RecentConversions';
 import NotFound from '@/pages/not-found';
 import { registerServiceWorker } from '@/lib/pwa';
 import { useStatusBar } from './hooks/useStatusBar';
@@ -34,6 +35,8 @@ function AppRoutes() {
         return <More />;
       case 'settings':
         return <Settings />;
+      case 'recent-conversions':
+        return <RecentConversions />;
       default:
         return <Home />;
     }

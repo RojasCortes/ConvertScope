@@ -5,6 +5,8 @@ import {
   type Favorite, type InsertFavorite,
   type CurrencyRate
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -127,4 +129,107 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// DatabaseStorage implementation
+
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async saveConversion(conversion: InsertConversion & { userId?: number }): Promise<Conversion> {
+    const [savedConversion] = await db
+      .insert(conversions)
+      .values({
+        ...conversion,
+        userId: conversion.userId || null,
+      })
+      .returning();
+    return savedConversion;
+  }
+
+  async getRecentConversions(userId?: number, limit = 10): Promise<Conversion[]> {
+    if (userId) {
+      return await db.select().from(conversions)
+        .where(eq(conversions.userId, userId))
+        .orderBy(desc(conversions.createdAt))
+        .limit(limit);
+    } else {
+      return await db.select().from(conversions)
+        .orderBy(desc(conversions.createdAt))
+        .limit(limit);
+    }
+  }
+
+  async addFavorite(favorite: InsertFavorite & { userId?: number }): Promise<Favorite> {
+    const [savedFavorite] = await db
+      .insert(favorites)
+      .values({
+        ...favorite,
+        userId: favorite.userId || null,
+      })
+      .returning();
+    return savedFavorite;
+  }
+
+  async removeFavorite(id: number): Promise<void> {
+    await db.delete(favorites).where(eq(favorites.id, id));
+  }
+
+  async getFavorites(userId?: number): Promise<Favorite[]> {
+    if (userId) {
+      return await db.select().from(favorites)
+        .where(eq(favorites.userId, userId))
+        .orderBy(desc(favorites.createdAt));
+    } else {
+      return await db.select().from(favorites)
+        .orderBy(desc(favorites.createdAt));
+    }
+  }
+
+  async saveCurrencyRate(baseCurrency: string, targetCurrency: string, rate: number): Promise<CurrencyRate> {
+    const [savedRate] = await db
+      .insert(currencyRates)
+      .values({
+        baseCurrency,
+        targetCurrency,
+        rate: rate.toString(),
+      })
+      .returning();
+    return savedRate;
+  }
+
+  async getCurrencyRate(baseCurrency: string, targetCurrency: string): Promise<CurrencyRate | undefined> {
+    const [rate] = await db
+      .select()
+      .from(currencyRates)
+      .where(eq(currencyRates.baseCurrency, baseCurrency))
+      .orderBy(desc(currencyRates.timestamp))
+      .limit(1);
+    return rate || undefined;
+  }
+
+  async getLatestCurrencyRates(): Promise<CurrencyRate[]> {
+    return await db
+      .select()
+      .from(currencyRates)
+      .orderBy(desc(currencyRates.timestamp))
+      .limit(50);
+  }
+}
+
+// Use DatabaseStorage instead of MemStorage
+export const storage = new DatabaseStorage();

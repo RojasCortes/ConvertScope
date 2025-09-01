@@ -11,37 +11,35 @@ export function Favorites() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  // ✅ CORREGIDO: Usar api.getFavorites() con tipos
-  const { data: favorites = [], isLoading, error } = useQuery<Favorite[]>({
+  // Usar sistema híbrido para favoritos
+  const { data: favorites = [], isLoading, error } = useQuery({
     queryKey: ['favorites'],
-    queryFn: api.getFavorites,
-    staleTime: 2 * 60 * 1000, // 2 minutos cache
+    queryFn: async () => {
+      const { hybridStorage } = await import('@/lib/storage');
+      return hybridStorage.getFavorites();
+    },
+    staleTime: 2 * 60 * 1000,
     retry: 3
   });
 
-  // ✅ CORREGIDO: Usar api.removeFavorite()
+  // Usar sistema híbrido para eliminar favoritos
   const removeFavoriteMutation = useMutation({
-    mutationFn: async (id: number | string) => {
+    mutationFn: async (id: string) => {
       console.log('Removing favorite with ID:', id);
-      return api.removeFavorite(id);
+      const { hybridStorage } = await import('@/lib/storage');
+      return hybridStorage.removeFavorite(id);
     },
     onSuccess: (data, id) => {
       console.log('Favorite removed successfully:', id);
-      // Invalidar cache para refrescar la lista
       queryClient.invalidateQueries({ queryKey: ['favorites'] });
-      
-      // Opcional: Mostrar notificación de éxito
-      // toast.success('Favorito eliminado');
     },
     onError: (error) => {
       console.error('Failed to remove favorite:', error);
-      // Opcional: Mostrar notificación de error
-      // toast.error('Error al eliminar favorito');
     }
   });
 
-  const handleRemoveFavorite = (id: number | string) => {
-    if (removeFavoriteMutation.isPending) return; // Evitar doble click
+  const handleRemoveFavorite = (id: string) => {
+    if (removeFavoriteMutation.isPending) return;
     removeFavoriteMutation.mutate(id);
   };
 
