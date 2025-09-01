@@ -3,13 +3,14 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { HeartOff, Star } from 'lucide-react';
+import { HeartOff, Star, ArrowRight } from 'lucide-react';
 import { categories } from '@/lib/conversions';
-import { api, type Favorite } from '@/lib/api'; // ¡USAR TU API con tipos!
+import { useAppStore } from '@/stores/useAppStore';
 
 export function Favorites() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const { setCurrentView, setCurrentCategory } = useAppStore();
 
   // Usar almacenamiento local para favoritos
   const { data: favorites = [], isLoading, error } = useQuery({
@@ -43,6 +44,19 @@ export function Favorites() {
     removeFavoriteMutation.mutate(id);
   };
 
+  const handleGoToConversion = (favorite: any) => {
+    console.log('🚀 Navigating to favorite conversion:', favorite);
+    
+    if (favorite.category === 'currency') {
+      // Navigate to currency converter
+      setCurrentView('currency');
+    } else {
+      // Navigate to category converter
+      setCurrentCategory(favorite.category);
+      setCurrentView('category');
+    }
+  };
+
   // ✅ AÑADIDO: Estados de carga y error
   if (isLoading) {
     return (
@@ -67,16 +81,16 @@ export function Favorites() {
         <div className="text-center py-8">
           <div className="text-4xl mb-2">⚠️</div>
           <p className="text-red-500 dark:text-red-400">
-            {t('common.error', 'Error loading favorites')}
+            {t('common.error')}
           </p>
           <p className="text-sm text-gray-500 mt-1">
-            {t('common.checkConnection', 'Check your internet connection')}
+            {t('common.checkConnection')}
           </p>
           <Button 
             onClick={() => queryClient.invalidateQueries({ queryKey: ['favorites'] })}
             className="mt-4"
           >
-            {t('common.retry', 'Retry')}
+            {t('common.retry')}
           </Button>
         </div>
       </div>
@@ -91,17 +105,17 @@ export function Favorites() {
       
       {Array.isArray(favorites) && favorites.length > 0 ? (
         <div className="space-y-4">
-          {favorites.map((favorite: Favorite) => {
+          {favorites.map((favorite: any) => {
             const category = categories.find(c => c.id === favorite.category);
             const isRemoving = removeFavoriteMutation.isPending;
             
             return (
-              <Card key={favorite.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+              <Card key={favorite.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3 flex-1">
                       <div className="text-2xl">{category?.emoji || '🔄'}</div>
-                      <div>
+                      <div className="flex-1">
                         <p className="font-medium text-gray-900 dark:text-white">
                           {favorite.fromUnit} → {favorite.toUnit}
                         </p>
@@ -116,19 +130,34 @@ export function Favorites() {
                         )}
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleRemoveFavorite(favorite.id)}
-                      disabled={isRemoving}
-                      className={`p-2 text-gray-400 hover:text-red-500 transition-colors ${isRemoving ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                      {isRemoving ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-500"></div>
-                      ) : (
-                        <HeartOff className="w-4 h-4" />
-                      )}
-                    </Button>
+                    
+                    <div className="flex items-center space-x-2">
+                      {/* Go to Conversion Button */}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleGoToConversion(favorite)}
+                        className="flex items-center space-x-1 text-blue-500 hover:text-blue-600 border-blue-200 hover:border-blue-300"
+                      >
+                        <ArrowRight className="w-4 h-4" />
+                        <span className="text-xs">{t('common.convert')}</span>
+                      </Button>
+                      
+                      {/* Remove Button */}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleRemoveFavorite(favorite.id)}
+                        disabled={isRemoving}
+                        className={`p-2 text-gray-400 hover:text-red-500 transition-colors ${isRemoving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        {isRemoving ? (
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-500"></div>
+                        ) : (
+                          <HeartOff className="w-4 h-4" />
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
