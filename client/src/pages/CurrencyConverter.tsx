@@ -34,24 +34,36 @@ export function CurrencyConverter() {
 
   // Check for pending navigation from favorites
   useEffect(() => {
+    console.log('🔍 CurrencyConverter: Checking for pending navigation...');
     const pendingNav = localStorage.getItem('pendingFavoriteNavigation');
+    console.log('📋 Found pending navigation:', pendingNav);
+    
     if (pendingNav) {
       try {
         const navData = JSON.parse(pendingNav);
-        const isRecent = Date.now() - navData.timestamp < 5000; // 5 seconds
+        const isRecent = Date.now() - navData.timestamp < 10000; // 10 seconds
+        console.log('⏰ Navigation data age:', Date.now() - navData.timestamp, 'ms');
+        console.log('✅ Is recent:', isRecent);
+        console.log('🎯 Category match:', navData.category === 'currency');
         
         if (isRecent && navData.category === 'currency') {
           console.log('🎯 Setting currencies from favorite navigation:', navData);
+          console.log('📤 Current currencies:', { from: fromCurrency, to: toCurrency });
           setFromCurrency(navData.fromUnit);
           setToCurrency(navData.toUnit);
+          console.log('📥 New currencies set:', { from: navData.fromUnit, to: navData.toUnit });
+          localStorage.removeItem('pendingFavoriteNavigation');
+          console.log('🗑️ Cleared pending navigation');
+        } else {
+          console.log('⚠️ Navigation data invalid or expired');
           localStorage.removeItem('pendingFavoriteNavigation');
         }
       } catch (error) {
-        console.error('Error parsing favorite navigation:', error);
+        console.error('❌ Error parsing favorite navigation:', error);
         localStorage.removeItem('pendingFavoriteNavigation');
       }
     }
-  }, [setFromCurrency, setToCurrency]);
+  }, [fromCurrency, toCurrency, setFromCurrency, setToCurrency]);
 
   // Fetch exchange rates
   const { data: ratesData, isLoading: ratesLoading, error: ratesError } = useQuery({

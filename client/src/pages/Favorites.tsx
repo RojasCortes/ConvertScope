@@ -48,23 +48,29 @@ export function Favorites() {
     console.log('🚀 Navigating to favorite conversion:', favorite);
     
     // Store the favorite units in localStorage for the target component to read
-    localStorage.setItem('pendingFavoriteNavigation', JSON.stringify({
+    const navData = {
       category: favorite.category,
       fromUnit: favorite.fromUnit,
       toUnit: favorite.toUnit,
       timestamp: Date.now()
-    }));
+    };
     
-    if (favorite.category === 'currency') {
-      // Navigate to currency converter
-      setCurrentView('currency');
-    } else {
-      // Navigate to category converter
-      setCurrentCategory(favorite.category);
-      setCurrentView('category');
-    }
+    localStorage.setItem('pendingFavoriteNavigation', JSON.stringify(navData));
+    console.log('📦 Stored navigation data:', navData);
     
-    console.log('✅ Navigation completed with units stored:', {
+    // Add a small delay to ensure localStorage is written
+    setTimeout(() => {
+      if (favorite.category === 'currency') {
+        console.log('➡️ Navigating to currency converter');
+        setCurrentView('currency');
+      } else {
+        console.log('➡️ Navigating to category converter with category:', favorite.category);
+        setCurrentCategory(favorite.category);
+        setCurrentView('category');
+      }
+    }, 100);
+    
+    console.log('✅ Navigation initiated with units stored:', {
       category: favorite.category,
       from: favorite.fromUnit,
       to: favorite.toUnit

@@ -28,24 +28,38 @@ export function CategoryConverter() {
 
   // Check for pending navigation from favorites
   useEffect(() => {
+    console.log('🔍 CategoryConverter: Checking for pending navigation...');
+    console.log('📂 Current category:', currentCategory);
     const pendingNav = localStorage.getItem('pendingFavoriteNavigation');
+    console.log('📋 Found pending navigation:', pendingNav);
+    
     if (pendingNav) {
       try {
         const navData = JSON.parse(pendingNav);
-        const isRecent = Date.now() - navData.timestamp < 5000; // 5 seconds
+        const isRecent = Date.now() - navData.timestamp < 10000; // 10 seconds
+        console.log('⏰ Navigation data age:', Date.now() - navData.timestamp, 'ms');
+        console.log('✅ Is recent:', isRecent);
+        console.log('🎯 Category match:', navData.category, '===', currentCategory, '?', navData.category === currentCategory);
         
         if (isRecent && navData.category === currentCategory) {
           console.log('🎯 Setting units from favorite navigation:', navData);
+          console.log('📤 Current units:', { from: fromUnit, to: toUnit });
           setFromUnit(navData.fromUnit);
           setToUnit(navData.toUnit);
+          console.log('📥 New units set:', { from: navData.fromUnit, to: navData.toUnit });
           localStorage.removeItem('pendingFavoriteNavigation');
+          console.log('🗑️ Cleared pending navigation');
+        } else {
+          console.log('⚠️ Navigation data invalid or expired');
+          if (!isRecent) console.log('❌ Too old');
+          if (navData.category !== currentCategory) console.log('❌ Category mismatch');
         }
       } catch (error) {
-        console.error('Error parsing favorite navigation:', error);
+        console.error('❌ Error parsing favorite navigation:', error);
         localStorage.removeItem('pendingFavoriteNavigation');
       }
     }
-  }, [currentCategory, setFromUnit, setToUnit]);
+  }, [currentCategory, fromUnit, toUnit, setFromUnit, setToUnit]);
 
   // Fetch favorites to check status
   const { data: favoritesData } = useQuery({
