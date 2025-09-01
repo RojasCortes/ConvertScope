@@ -48,13 +48,25 @@ export function Favorites() {
     console.log('🚀 Navigating to favorite conversion:', favorite);
     
     if (favorite.category === 'currency') {
-      // Navigate to currency converter
+      // Navigate to currency converter and set currencies
+      const { setFromCurrency, setToCurrency } = useAppStore.getState();
+      setFromCurrency(favorite.fromUnit);
+      setToCurrency(favorite.toUnit);
       setCurrentView('currency');
     } else {
-      // Navigate to category converter
+      // Navigate to category converter and set units
+      const { setFromUnit, setToUnit } = useAppStore.getState();
       setCurrentCategory(favorite.category);
+      setFromUnit(favorite.fromUnit);
+      setToUnit(favorite.toUnit);
       setCurrentView('category');
     }
+    
+    console.log('✅ Navigation completed with units:', {
+      category: favorite.category,
+      from: favorite.fromUnit,
+      to: favorite.toUnit
+    });
   };
 
   // ✅ AÑADIDO: Estados de carga y error
