@@ -162,7 +162,7 @@ export function Home() {
             <div className="text-center py-8 text-gray-500 dark:text-gray-400">
               <div className="text-4xl mb-2">📋</div>
               <p>{t('home.noRecentConversions')}</p>
-              <p className="text-sm mt-1">Realiza una conversión para verla aquí</p>
+              <p className="text-sm mt-1">{t('conversions.noRecentDescription')}</p>
             </div>
           ) : null}
         </div>
