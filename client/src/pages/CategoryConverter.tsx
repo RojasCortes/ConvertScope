@@ -66,7 +66,7 @@ export function CategoryConverter() {
 
   useEffect(() => {
     if (units.length > 0) {
-      // Force reset units when switching categories
+      // Force reset units and values when switching categories
       const firstUnit = units[0].id;
       const secondUnit = units[1]?.id || units[0].id;
       
@@ -76,6 +76,12 @@ export function CategoryConverter() {
       setFromUnit(firstUnit);
       setToUnit(secondUnit);
       
+      // Reset input values when changing categories
+      setFromValue(0);
+      setToValue(0);
+      setDisplayValue('');
+      
+      console.log('🔧 Reset all values for new category');
       console.log('🔧 Set fromUnit:', firstUnit, units[0].name);
       console.log('🔧 Set toUnit:', secondUnit, units.find(u => u.id === secondUnit)?.name);
     }
@@ -93,21 +99,17 @@ export function CategoryConverter() {
       const converted = convertValue(fromValue, fromUnit, toUnit, currentCategory);
       setToValue(converted);
       
-      // Auto-save conversion after a delay
-      const timer = setTimeout(() => {
-        if (converted > 0) {
-          console.log('💾 Saving category conversion:', { fromUnit, toUnit, fromValue, toValue: converted, category: currentCategory });
-          saveConversionMutation.mutate({
-            fromUnit,
-            toUnit,
-            fromValue: fromValue.toString(),
-            toValue: converted.toString(),
-            category: currentCategory
-          });
-        }
-      }, 2000); // 2 second delay
-      
-      return () => clearTimeout(timer);
+      // Save conversion immediately (no delay for better reliability)
+      if (converted > 0) {
+        console.log('💾 Saving category conversion immediately:', { fromUnit, toUnit, fromValue, toValue: converted, category: currentCategory });
+        saveConversionMutation.mutate({
+          fromUnit,
+          toUnit,
+          fromValue: fromValue.toString(),
+          toValue: converted.toString(),
+          category: currentCategory
+        });
+      }
     } else {
       setToValue(0);
     }
@@ -210,7 +212,14 @@ export function CategoryConverter() {
       <div className="p-4 pb-2">
         <Button
           variant="ghost"
-          onClick={() => setCurrentView('home')}
+          onClick={() => {
+            // Reset all values when going back
+            setFromValue(0);
+            setToValue(0);
+            setDisplayValue('');
+            console.log('🔄 Reset values on back navigation');
+            setCurrentView('home');
+          }}
           className="flex items-center space-x-2 text-blue-500 hover:text-blue-600 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />

@@ -121,20 +121,16 @@ export function CurrencyConverter() {
       console.log('Conversion result:', converted);
       setConvertedCurrencyAmount(converted);
       
-      // Auto-save currency conversion after a delay
+      // Save currency conversion immediately (no delay for better reliability)
       if (currencyAmount > 0 && converted > 0) {
-        const timer = setTimeout(() => {
-          console.log('💾 Saving currency conversion:', { fromCurrency, toCurrency, currencyAmount, converted });
-          saveConversionMutation.mutate({
-            fromUnit: fromCurrency,
-            toUnit: toCurrency,
-            fromValue: currencyAmount.toString(),
-            toValue: converted.toString(),
-            category: 'currency'
-          });
-        }, 2000);
-        
-        return () => clearTimeout(timer);
+        console.log('💾 Saving currency conversion immediately:', { fromCurrency, toCurrency, currencyAmount, converted });
+        saveConversionMutation.mutate({
+          fromUnit: fromCurrency,
+          toUnit: toCurrency,
+          fromValue: currencyAmount.toString(),
+          toValue: converted.toString(),
+          category: 'currency'
+        });
       }
     }
   }, [currencyAmount, fromCurrency, toCurrency, exchangeRates]);
@@ -226,7 +222,14 @@ export function CurrencyConverter() {
       <div className="p-4 pb-2">
         <Button
           variant="ghost"
-          onClick={() => setCurrentView('home')}
+          onClick={() => {
+            // Reset currency values when going back
+            setCurrencyAmount(0);
+            setConvertedCurrencyAmount(0);
+            setDisplayAmount('');
+            console.log('🔄 Reset currency values on back navigation');
+            setCurrentView('home');
+          }}
           className="flex items-center space-x-2 text-blue-500 hover:text-blue-600 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
