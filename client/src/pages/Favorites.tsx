@@ -44,37 +44,48 @@ export function Favorites() {
     removeFavoriteMutation.mutate(id);
   };
 
-  const handleGoToConversion = (favorite: any) => {
+  const handleGoToConversion = async (favorite: any) => {
     console.log('🚀 Navigating to favorite conversion:', favorite);
     
-    // Store the favorite units in localStorage for the target component to read
-    const navData = {
-      category: favorite.category,
-      fromUnit: favorite.fromUnit,
-      toUnit: favorite.toUnit,
-      timestamp: Date.now()
-    };
-    
-    localStorage.setItem('pendingFavoriteNavigation', JSON.stringify(navData));
-    console.log('📦 Stored navigation data:', navData);
-    
-    // Add a small delay to ensure localStorage is written
-    setTimeout(() => {
+    try {
+      // Store the favorite units in localStorage for the target component to read
+      const navData = {
+        category: favorite.category,
+        fromUnit: favorite.fromUnit,
+        toUnit: favorite.toUnit,
+        timestamp: Date.now()
+      };
+      
+      localStorage.setItem('pendingFavoriteNavigation', JSON.stringify(navData));
+      console.log('📦 Stored navigation data:', navData);
+      
+      // Para conversiones de divisas, también configurar la tienda
       if (favorite.category === 'currency') {
+        const { useConverterStore } = await import('@/stores/useConverterStore');
+        const { setFromCurrency, setToCurrency, setCurrentCategory } = useConverterStore.getState();
+        setFromCurrency(favorite.fromUnit);
+        setToCurrency(favorite.toUnit);
+        setCurrentCategory('currency');
         console.log('➡️ Navigating to currency converter');
         setCurrentView('currency');
       } else {
+        // Para conversiones de categorías
+        const { useConverterStore } = await import('@/stores/useConverterStore');
+        const { setFromUnit, setToUnit, setCurrentCategory } = useConverterStore.getState();
+        setFromUnit(favorite.fromUnit);
+        setToUnit(favorite.toUnit);
+        setCurrentCategory(favorite.category);
         console.log('➡️ Navigating to category converter with category:', favorite.category);
         setCurrentCategory(favorite.category);
         setCurrentView('category');
       }
-    }, 100);
-    
-    console.log('✅ Navigation initiated with units stored:', {
-      category: favorite.category,
-      from: favorite.fromUnit,
-      to: favorite.toUnit
-    });
+      
+      // Invalidar queries para asegurar datos frescos
+      await queryClient.invalidateQueries({ queryKey: ['favorites'] });
+      
+    } catch (error) {
+      console.error('❌ Error navigating to conversion:', error);
+    }
   };
 
   // ✅ AÑADIDO: Estados de carga y error

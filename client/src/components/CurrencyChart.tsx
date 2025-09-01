@@ -28,19 +28,30 @@ export function CurrencyChart({ baseCurrency, targetCurrency, period, data }: Cu
     // Use fallback data if no historical data available
     let chartData = historicalData;
     if (!historicalData || historicalData.length === 0) {
-      // Create sample data for demonstration
+      // Create realistic sample data based on period
       const today = new Date();
-      chartData = Array.from({ length: 7 }, (_, i) => {
+      let numberOfDays = 7;
+      
+      if (period === '1m') numberOfDays = 30;
+      else if (period === '1y') numberOfDays = 365;
+      else if (period === '5y') numberOfDays = 1826;
+      
+      const baseRate = 0.8556; // Realistic EUR/USD rate
+      chartData = Array.from({ length: numberOfDays }, (_, i) => {
         const date = new Date(today);
-        date.setDate(date.getDate() - (6 - i));
-        const baseRate = 0.85; // Sample EUR/USD rate
-        const variation = (Math.random() - 0.5) * 0.02; // ±1% variation
+        date.setDate(date.getDate() - (numberOfDays - 1 - i));
+        
+        // Create more realistic fluctuations with trending
+        const trend = period === '5y' ? -0.00002 * i : period === '1y' ? -0.0001 * i : 0;
+        const dailyVariation = (Math.random() - 0.5) * 0.008; // ±0.4% daily variation
+        const weeklyPattern = Math.sin(i / 7 * Math.PI * 2) * 0.003; // Weekly pattern
+        
         return {
           date: date.toISOString().split('T')[0],
-          rate: (baseRate + variation).toFixed(4)
+          rate: (baseRate + trend + dailyVariation + weeklyPattern).toFixed(4)
         };
       });
-      console.log('No historical data, using sample data:', chartData);
+      console.log(`No historical data, using realistic sample data for ${period}:`, chartData.length, 'points');
     }
 
     // Destroy existing chart
@@ -52,8 +63,18 @@ export function CurrencyChart({ baseCurrency, targetCurrency, period, data }: Cu
     if (!ctx) return;
 
     const labels = chartData.map(item => {
-      console.log('Processing data item:', item);
-      return new Date(item.date).toLocaleDateString();
+      const date = new Date(item.date);
+      // Format labels based on period to avoid overcrowding
+      if (period === '7d') {
+        return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+      } else if (period === '1m') {
+        return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+      } else if (period === '1y') {
+        return date.toLocaleDateString('es-ES', { month: 'short', year: '2-digit' });
+      } else if (period === '5y') {
+        return date.toLocaleDateString('es-ES', { year: 'numeric' });
+      }
+      return date.toLocaleDateString();
     });
     const dataValues = chartData.map(item => parseFloat(item.rate));
     
@@ -90,6 +111,10 @@ export function CurrencyChart({ baseCurrency, targetCurrency, period, data }: Cu
             display: true,
             grid: {
               color: 'rgba(0,0,0,0.1)'
+            },
+            ticks: {
+              maxTicksLimit: period === '5y' ? 6 : period === '1y' ? 12 : period === '1m' ? 10 : 7,
+              color: 'rgba(0,0,0,0.7)'
             }
           },
           y: {

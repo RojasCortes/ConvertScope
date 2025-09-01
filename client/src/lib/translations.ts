@@ -178,7 +178,7 @@ export const translations = {
       recent: 'Conversiones Recientes',
       recentDescription: 'Historial de tus conversiones más recientes',
       noRecent: 'No hay conversiones recientes',
-      noRecentDescription: 'Empieza a convertir para ver tu historial aquí',
+      noRecentDescription: 'Realiza una conversión para verla aquí',
       startConverting: 'Empezar a Convertir',
       count: 'conversión',
       saved: 'guardadas',
