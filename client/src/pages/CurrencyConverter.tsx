@@ -14,7 +14,7 @@ import { CurrencyChart } from '@/components/CurrencyChart';
 import { TechnicalIndicators } from '@/components/TechnicalIndicators';
 import { ArrowLeft, ArrowUpDown, BarChart3, TrendingUp, Gem } from 'lucide-react';
 import { currencies } from '@/lib/currencies';
-import { apiRequest } from '@/lib/queryClient';
+import { api } from '@/lib/api';
 
 export function CurrencyConverter() {
   const { setCurrentView } = useAppStore();
@@ -37,37 +37,7 @@ export function CurrencyConverter() {
     queryKey: ['/api/exchange-rates'],
     refetchInterval: 5 * 60 * 1000,
     retry: 1,
-    queryFn: async () => {
-      try {
-        const response = await fetch('/api/exchange-rates');
-        if (!response.ok) throw new Error('API not available');
-        return await response.json();
-      } catch (error) {
-        console.log('Using fallback exchange rates');
-        return {
-          base: "USD",
-          rates: {
-            USD: 1,
-            EUR: 0.85,
-            GBP: 0.73,
-            JPY: 110.0,
-            CAD: 1.25,
-            AUD: 1.35,
-            CHF: 0.92,
-            CNY: 6.45,
-            MXN: 17.5,
-            BRL: 5.2,
-            INR: 74.5,
-            KRW: 1180.0,
-            RUB: 74.0,
-            ZAR: 14.8,
-            SGD: 1.34,
-            COP: 4200.0
-          },
-          timestamp: Date.now()
-        };
-      }
-    }
+    queryFn: () => api.getExchangeRates()
   });
 
   // Fetch historical data
@@ -75,18 +45,13 @@ export function CurrencyConverter() {
     queryKey: ['/api/currency-history', fromCurrency, toCurrency, period],
     enabled: !!(fromCurrency && toCurrency),
     staleTime: 5 * 60 * 1000,
-    queryFn: async () => {
-      const response = await fetch(`/api/currency-history/${fromCurrency}/${toCurrency}/${period}`);
-      if (!response.ok) throw new Error('Failed to fetch historical data');
-      const data = await response.json();
-      console.log('Fetched historical data for chart:', data);
-      return data;
-    }
+    queryFn: () => api.getCurrencyHistory(fromCurrency, toCurrency, period)
   });
 
   // Fetch favorites to check status
   const { data: favoritesData } = useQuery({
     queryKey: ['/api/favorites'],
+    queryFn: () => api.getFavorites()
   });
 
   // Check if current pair is favorited
@@ -96,7 +61,7 @@ export function CurrencyConverter() {
 
   const saveConversionMutation = useMutation({
     mutationFn: async (conversionData: any) => {
-      return apiRequest('POST', '/api/conversions', conversionData);
+      return api.saveConversion(conversionData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/conversions/recent'] });
@@ -343,29 +308,18 @@ export function CurrencyConverter() {
                           fav.fromUnit === fromCurrency && fav.toUnit === toCurrency && fav.category === 'currency'
                         );
                         if (favoriteToRemove) {
-                          await fetch(`/api/favorites/${favoriteToRemove.id}`, {
-                            method: 'DELETE',
-                          });
+                          await api.removeFavorite(favoriteToRemove.id);
                           await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
                           alert('Removido de favoritos');
                         }
                       } else {
-                        const response = await fetch('/api/favorites', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({
-                            fromUnit: fromCurrency,
-                            toUnit: toCurrency,
-                            category: 'currency'
-                          }),
+                        await api.addFavorite({
+                          fromUnit: fromCurrency,
+                          toUnit: toCurrency,
+                          category: 'currency'
                         });
-                        
-                        if (response.ok) {
-                          await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
-                          alert('Agregado a favoritos');
-                        } else if (response.status === 409) {
-                          alert('Ya está en favoritos');
-                        }
+                        await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+                        alert('Agregado a favoritos');
                       }
                     } catch (error) {
                       console.error('Error updating favorites:', error);

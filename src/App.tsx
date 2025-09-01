@@ -14,6 +14,7 @@ import { Settings } from '@/pages/Settings';
 import { More } from '@/pages/More';
 import NotFound from '@/pages/not-found';
 import { registerServiceWorker } from '@/lib/pwa';
+import { Capacitor } from '@capacitor/core';
 
 function AppRoutes() {
   const currentView = useAppStore((state) => state.currentView);
@@ -46,8 +47,10 @@ function AppRoutes() {
 
 function App() {
   useEffect(() => {
-    // Register service worker for PWA functionality
-    registerServiceWorker();
+    // Only register service worker in production and not in native apps
+    if (import.meta.env.PROD && !Capacitor.isNativePlatform()) {
+      registerServiceWorker();
+    }
   }, []);
 
   return (

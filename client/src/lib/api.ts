@@ -157,13 +157,7 @@ export const api = {
   // Obtener historial de divisas
   async getCurrencyHistory(base: string, target: string, period: string): Promise<HistoricalDataPoint[]> {
     try {
-      const params = new URLSearchParams({
-        base: base.toUpperCase(),
-        target: target.toUpperCase(),
-        period: period
-      });
-      
-      const url = `${API_BASE_URL}/currency-history?${params.toString()}`;
+      const url = `${API_BASE_URL}/currency-history/${base.toUpperCase()}/${target.toUpperCase()}?period=${period}`;
       const response = await makeRequest<HistoricalDataResponse>(url);
       return response.data || [];
     } catch (error) {
@@ -199,7 +193,7 @@ export const api = {
   // ✅ CONVERSIONES RECIENTES CON FALLBACK
   async getRecentConversions(limit = 10): Promise<Conversion[]> {
     try {
-      const url = `${API_BASE_URL}/conversions?limit=${limit}`;
+      const url = `${API_BASE_URL}/conversions/recent?limit=${limit}`;
       console.log(`📋 Fetching recent conversions: ${url}`);
       
       const result = await makeRequest<Conversion[]>(url);
@@ -255,7 +249,7 @@ export const api = {
     try {
       console.log(`🗑️ Removing favorite with ID: ${id}`);
       
-      const url = `${API_BASE_URL}/favorites?id=${id}`;
+      const url = `${API_BASE_URL}/favorites/${id}`;
       
       return await makeRequest<{ success: boolean; removedId: string }>(url, {
         method: 'DELETE'

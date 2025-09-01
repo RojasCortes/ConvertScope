@@ -12,7 +12,7 @@ import { CurrencyChart } from '@/components/CurrencyChart';
 import { TechnicalIndicators } from '@/components/TechnicalIndicators';
 import { ArrowLeft, ArrowUpDown, BarChart3, TrendingUp, Gem } from 'lucide-react';
 import { currencies } from '@/lib/currencies';
-import { apiRequest } from '@/lib/queryClient';
+import { api } from '@/lib/api';
 
 export function CurrencyConverter() {
   const { setCurrentView } = useAppStore();
@@ -31,6 +31,7 @@ export function CurrencyConverter() {
   const { data: ratesData, isLoading: ratesLoading } = useQuery({
     queryKey: ['/api/exchange-rates'],
     refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
+    queryFn: () => api.getExchangeRates()
   });
 
   // Fetch historical data
@@ -38,18 +39,13 @@ export function CurrencyConverter() {
     queryKey: ['/api/currency-history', fromCurrency, toCurrency, period],
     enabled: !!(fromCurrency && toCurrency),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    queryFn: async () => {
-      const response = await fetch(`/api/currency-history/${fromCurrency}/${toCurrency}/${period}`);
-      if (!response.ok) throw new Error('Failed to fetch historical data');
-      const data = await response.json();
-      console.log('Fetched historical data for chart:', data);
-      return data;
-    }
+    queryFn: () => api.getCurrencyHistory(fromCurrency, toCurrency, period)
   });
 
   // Fetch favorites to check status
   const { data: favoritesData } = useQuery({
     queryKey: ['/api/favorites'],
+    queryFn: () => api.getFavorites()
   });
 
   // Check if current pair is favorited
@@ -63,7 +59,7 @@ export function CurrencyConverter() {
 
   const saveConversionMutation = useMutation({
     mutationFn: async (conversionData: any) => {
-      return apiRequest('POST', '/api/conversions', conversionData);
+      return api.saveConversion(conversionData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/conversions/recent'] });
@@ -262,30 +258,18 @@ export function CurrencyConverter() {
                           fav.fromUnit === fromCurrency && fav.toUnit === toCurrency && fav.category === 'currency'
                         );
                         if (favoriteToRemove) {
-                          await fetch(`/api/favorites/${favoriteToRemove.id}`, {
-                            method: 'DELETE',
-                          });
+                          await api.removeFavorite(favoriteToRemove.id);
                           await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
                           alert('Removido de favoritos');
                         }
                       } else {
-                        // Add to favorites
-                        const response = await fetch('/api/favorites', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({
-                            fromUnit: fromCurrency,
-                            toUnit: toCurrency,
-                            category: 'currency'
-                          }),
+                        await api.addFavorite({
+                          fromUnit: fromCurrency,
+                          toUnit: toCurrency,
+                          category: 'currency'
                         });
-                        
-                        if (response.ok) {
-                          await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
-                          alert('Agregado a favoritos');
-                        } else if (response.status === 409) {
-                          alert('Ya está en favoritos');
-                        }
+                        await queryClient.invalidateQueries({ queryKey: ['/api/favorites'] });
+                        alert('Agregado a favoritos');
                       }
                     } catch (error) {
                       console.error('Error updating favorites:', error);
