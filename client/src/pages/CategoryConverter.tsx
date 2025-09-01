@@ -55,8 +55,12 @@ export function CategoryConverter() {
         category: conversionData.category
       });
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
+      console.log('✅ Conversion saved successfully:', result);
       queryClient.invalidateQueries({ queryKey: ['recent-conversions'] });
+    },
+    onError: (error) => {
+      console.error('❌ Error saving conversion:', error);
     },
   });
 
@@ -82,6 +86,7 @@ export function CategoryConverter() {
       // Auto-save conversion after a delay
       const timer = setTimeout(() => {
         if (converted > 0) {
+          console.log('💾 Saving conversion:', { fromUnit, toUnit, fromValue, toValue: converted, category: currentCategory });
           saveConversionMutation.mutate({
             fromUnit,
             toUnit,

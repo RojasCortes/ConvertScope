@@ -19,9 +19,11 @@ export function Home() {
     queryKey: ['recent-conversions'],
     queryFn: async () => {
       const { localStorageManager } = await import('@/lib/localStorage');
-      return localStorageManager.getRecentConversions(5);
+      const conversions = await localStorageManager.getRecentConversions(5);
+      console.log('🔍 Recent conversions loaded:', conversions);
+      return conversions;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 1000, // 30 seconds
     retry: 3,
     retryDelay: 1000
   });
