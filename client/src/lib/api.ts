@@ -7,7 +7,7 @@ let platform = 'web';
 // Función para detectar Capacitor de forma segura
 function detectCapacitor() {
   try {
-    // @ts-ignore - Importar Capacitor solo si está disponible
+    // @ts-ignore - Verificar si Capacitor está disponible globalmente
     if (typeof window !== 'undefined' && window.Capacitor) {
       return window.Capacitor;
     }
