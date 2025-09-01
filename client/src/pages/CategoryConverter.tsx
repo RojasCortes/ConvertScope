@@ -433,9 +433,9 @@ export function CategoryConverter() {
                 </thead>
                 <tbody className="text-gray-600 dark:text-gray-400">
                   {quickReferenceData.map((row, index) => (
-                    <tr key={index} className="border-b border-gray-100 dark:border-gray-700">
-                      {units.slice(0, 3).map((unit) => (
-                        <td key={unit.id} className="py-2">
+                    <tr key={`row-${index}`} className="border-b border-gray-100 dark:border-gray-700">
+                      {units.slice(0, 3).map((unit, unitIndex) => (
+                        <td key={`${index}-${unit.id}-${unitIndex}`} className="py-2">
                           {row[unit.id]?.toFixed(2)} {unit.symbol}
                         </td>
                       ))}

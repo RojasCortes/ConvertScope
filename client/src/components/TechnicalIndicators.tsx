@@ -30,7 +30,9 @@ export function TechnicalIndicators({ rsi, sma, volatility }: TechnicalIndicator
       </div>
       <div className="text-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
         <p className="text-xs text-gray-500 dark:text-gray-400">{t('currency.volatility')}</p>
-        <p className={`font-semibold ${getVolatilityColor(volatility)}`}>{volatility}</p>
+        <p className={`font-semibold ${getVolatilityColor(volatility)}`}>
+          {t(`currency.${volatility.toLowerCase()}`)}
+        </p>
       </div>
     </div>
   );

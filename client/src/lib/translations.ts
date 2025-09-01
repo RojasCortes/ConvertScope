@@ -97,6 +97,9 @@ export const translations = {
       nextWeek: 'en los próximos 7 días',
       basedOnTechnicalAnalysis: 'Basado en análisis técnico básico',
       volatility: 'Volatilidad',
+      low: 'Bajo',
+      medium: 'Medio', 
+      high: 'Alto',
     },
     converter: {
       from: 'Desde',
@@ -290,6 +293,9 @@ export const translations = {
       nextWeek: 'in the next 7 days',
       basedOnTechnicalAnalysis: 'Based on basic technical analysis',
       volatility: 'Volatility',
+      low: 'Low',
+      medium: 'Medium',
+      high: 'High',
     },
     converter: {
       from: 'From',
