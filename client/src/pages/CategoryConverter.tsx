@@ -100,33 +100,38 @@ export function CategoryConverter() {
   });
 
   useEffect(() => {
-    if (units.length > 0 && (!fromUnit || !toUnit)) {
-      // Only initialize units if they are not already set (e.g., from favorites)
-      const firstUnit = units[0].id;
-      const secondUnit = units[1]?.id || units[0].id;
+    if (units.length > 0) {
+      // Check if current units are valid for this category
+      const fromUnitValid = fromUnit && units.some(u => u.id === fromUnit);
+      const toUnitValid = toUnit && units.some(u => u.id === toUnit);
       
-      console.log('🔧 Initializing units for category (only if not set):', currentCategory);
+      console.log('🔧 Checking units for category:', currentCategory);
       console.log('🔧 Current units:', { from: fromUnit, to: toUnit });
+      console.log('🔧 Units valid:', { from: fromUnitValid, to: toUnitValid });
       console.log('🔧 Available units:', units.map(u => u.name));
       
-      if (!fromUnit) {
-        setFromUnit(firstUnit);
-        console.log('🔧 Set fromUnit:', firstUnit, units[0].name);
-      }
-      if (!toUnit) {
-        setToUnit(secondUnit);
-        console.log('🔧 Set toUnit:', secondUnit, units.find(u => u.id === secondUnit)?.name);
-      }
-      
-      // Only reset input values if units were actually initialized
-      if (!fromUnit || !toUnit) {
+      // Initialize units if they are empty or invalid for this category
+      if (!fromUnitValid || !toUnitValid) {
+        const firstUnit = units[0].id;
+        const secondUnit = units[1]?.id || units[0].id;
+        
+        if (!fromUnitValid) {
+          setFromUnit(firstUnit);
+          console.log('🔧 Set fromUnit:', firstUnit, units[0].name);
+        }
+        if (!toUnitValid) {
+          setToUnit(secondUnit);
+          console.log('🔧 Set toUnit:', secondUnit, units.find(u => u.id === secondUnit)?.name);
+        }
+        
+        // Reset input values when units change
         setFromValue(0);
         setToValue(0);
         setDisplayValue('');
-        console.log('🔧 Reset values for newly initialized units');
+        console.log('🔧 Reset values for category change');
       }
     }
-  }, [units.length, currentCategory, fromUnit, toUnit]);
+  }, [units.length, currentCategory]);
 
   // ✨ NUEVO: Solo actualizar displayValue cuando NO esté enfocado
   useEffect(() => {
