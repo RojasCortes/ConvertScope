@@ -59,22 +59,11 @@ export function Favorites() {
       localStorage.setItem('pendingFavoriteNavigation', JSON.stringify(navData));
       console.log('📦 Stored navigation data:', navData);
       
-      // Para conversiones de divisas, también configurar la tienda
+      // Navigate to the appropriate view
       if (favorite.category === 'currency') {
-        const { useConverterStore } = await import('@/stores/useConverterStore');
-        const { setFromCurrency, setToCurrency, setCurrentCategory } = useConverterStore.getState();
-        setFromCurrency(favorite.fromUnit);
-        setToCurrency(favorite.toUnit);
-        setCurrentCategory('currency');
         console.log('➡️ Navigating to currency converter');
         setCurrentView('currency');
       } else {
-        // Para conversiones de categorías
-        const { useConverterStore } = await import('@/stores/useConverterStore');
-        const { setFromUnit, setToUnit, setCurrentCategory } = useConverterStore.getState();
-        setFromUnit(favorite.fromUnit);
-        setToUnit(favorite.toUnit);
-        setCurrentCategory(favorite.category);
         console.log('➡️ Navigating to category converter with category:', favorite.category);
         setCurrentCategory(favorite.category);
         setCurrentView('category');
@@ -198,7 +187,7 @@ export function Favorites() {
           {/* ✅ AÑADIDO: Información adicional */}
           <div className="text-center pt-4">
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              {favorites.length} {t('conversions.favorite')}{favorites.length !== 1 ? 's' : ''} {t('conversions.saved')}
+              {favorites.length} favorito{favorites.length !== 1 ? 's' : ''} guardado{favorites.length !== 1 ? 's' : ''}
             </p>
           </div>
         </div>

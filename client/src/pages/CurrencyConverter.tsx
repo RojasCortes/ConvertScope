@@ -49,9 +49,14 @@ export function CurrencyConverter() {
         if (isRecent && navData.category === 'currency') {
           console.log('🎯 Setting currencies from favorite navigation:', navData);
           console.log('📤 Current currencies:', { from: fromCurrency, to: toCurrency });
-          setFromCurrency(navData.fromUnit);
-          setToCurrency(navData.toUnit);
-          console.log('📥 New currencies set:', { from: navData.fromUnit, to: navData.toUnit });
+          
+          // Force update currencies with a slight delay to ensure store is ready
+          setTimeout(() => {
+            setFromCurrency(navData.fromUnit);
+            setToCurrency(navData.toUnit);
+            console.log('📥 New currencies set:', { from: navData.fromUnit, to: navData.toUnit });
+          }, 50);
+          
           localStorage.removeItem('pendingFavoriteNavigation');
           console.log('🗑️ Cleared pending navigation');
         } else {

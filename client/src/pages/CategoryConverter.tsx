@@ -44,9 +44,14 @@ export function CategoryConverter() {
         if (isRecent && navData.category === currentCategory) {
           console.log('🎯 Setting units from favorite navigation:', navData);
           console.log('📤 Current units:', { from: fromUnit, to: toUnit });
-          setFromUnit(navData.fromUnit);
-          setToUnit(navData.toUnit);
-          console.log('📥 New units set:', { from: navData.fromUnit, to: navData.toUnit });
+          
+          // Force update units with a slight delay to ensure store is ready
+          setTimeout(() => {
+            setFromUnit(navData.fromUnit);
+            setToUnit(navData.toUnit);
+            console.log('📥 New units set:', { from: navData.fromUnit, to: navData.toUnit });
+          }, 50);
+          
           localStorage.removeItem('pendingFavoriteNavigation');
           console.log('🗑️ Cleared pending navigation');
         } else {
