@@ -188,7 +188,7 @@ export function Favorites() {
           {/* ✅ AÑADIDO: Información adicional */}
           <div className="text-center pt-4">
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              {favorites.length} favorito{favorites.length !== 1 ? 's' : ''} guardado{favorites.length !== 1 ? 's' : ''}
+              {favorites.length} {t('conversions.favorite')}{favorites.length !== 1 ? 's' : ''} {t('conversions.saved')}{favorites.length !== 1 ? 's' : ''}
             </p>
           </div>
         </div>

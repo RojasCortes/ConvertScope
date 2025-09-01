@@ -181,7 +181,7 @@ export const translations = {
       noRecentDescription: 'Realiza una conversión para verla aquí',
       startConverting: 'Empezar a Convertir',
       count: 'conversión',
-      saved: 'guardadas',
+      saved: 'guardado',
       favorite: 'favorito',
     },
     time: {
