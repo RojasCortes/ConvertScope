@@ -2,7 +2,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useAppStore } from '@/stores/useAppStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { AdSpace } from '@/components/AdSpace';
+import { AdSenseBanner } from '@/components/AdSenseBanner';
 import { Link } from 'wouter';
 import { 
   Calculator, 
@@ -182,8 +182,8 @@ export function More() {
         </div>
       </div>
 
-      {/* Ad Space */}
-      <AdSpace />
+      {/* AdSense Banner */}
+      <AdSenseBanner />
 
       {/* Legal Information Section */}
       <div className="mb-6">
@@ -277,8 +277,8 @@ export function More() {
         </CardContent>
       </Card>
 
-      {/* Ad Space */}
-      <AdSpace className="mt-6" />
+      {/* AdSense Banner */}
+      <AdSenseBanner className="w-full h-24 mt-6" />
     </div>
   );
 }
