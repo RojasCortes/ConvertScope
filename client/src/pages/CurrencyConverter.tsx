@@ -9,7 +9,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AdSpace } from '@/components/AdSpace';
+import { AdSenseRectangle } from '@/components/AdSenseRectangle';
+import { AdSenseBanner } from '@/components/AdSenseBanner';
 import { CurrencyChart } from '@/components/CurrencyChart';
 import { TechnicalIndicators } from '@/components/TechnicalIndicators';
 import { ArrowLeft, ArrowUpDown, BarChart3, TrendingUp, Gem } from 'lucide-react';
@@ -411,8 +412,8 @@ export function CurrencyConverter() {
         </Card>
       </div>
 
-      {/* Ad Space */}
-      <AdSpace />
+      {/* AdSense Rectangle Ad */}
+      <AdSenseRectangle />
 
       {/* Currency Strength Index */}
       <div className="px-4 pb-4">
@@ -519,8 +520,8 @@ export function CurrencyConverter() {
         </Card>
       </div>
 
-      {/* Ad Space */}
-      <AdSpace />
+      {/* AdSense Banner Ad */}
+      <AdSenseBanner />
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AdSpace } from '@/components/AdSpace';
+import { AdSenseBanner } from '@/components/AdSenseBanner';
 import { ArrowLeft, ArrowUpDown } from 'lucide-react';
 import { convertValue } from '@/lib/conversions';
 import { useLocalizedCategories, getLocalizedUnitsForCategory } from '@/lib/dynamicUnits';
@@ -455,8 +455,8 @@ export function CategoryConverter() {
         </Card>
       </div>
 
-      {/* Ad Space */}
-      <AdSpace />
+      {/* AdSense Banner */}
+      <AdSenseBanner />
     </div>
   );
 }

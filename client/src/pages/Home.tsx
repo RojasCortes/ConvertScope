@@ -5,7 +5,7 @@ import { useAppStore } from '@/stores/useAppStore';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { AdSpace } from '@/components/AdSpace';
+import { AdSenseBanner } from '@/components/AdSenseBanner';
 import { Search, TrendingUp } from 'lucide-react';
 import { useLocalizedCategories } from '@/lib/dynamicUnits';
 import { api, type Conversion } from '@/lib/api'; // ¡USAR TU API con tipos!
@@ -61,8 +61,8 @@ export function Home() {
         </div>
       </div>
 
-      {/* Ad Space 1 */}
-      <AdSpace />
+      {/* AdSense Banner 1 */}
+      <AdSenseBanner />
 
       {/* Categories Grid */}
       <div className="px-4 pb-4">
@@ -168,8 +168,8 @@ export function Home() {
         </div>
       </div>
 
-      {/* Ad Space 2 */}
-      <AdSpace />
+      {/* AdSense Banner 2 */}
+      <AdSenseBanner />
     </div>
   );
 }
