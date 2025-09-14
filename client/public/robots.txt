@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://convert-scope.vercel.app/sitemap.xml
+
+# Important pages for crawling
+Allow: /about
+Allow: /contact
+Allow: /privacy
+Allow: /terms

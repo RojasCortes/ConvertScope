@@ -13,6 +13,10 @@ import { Favorites } from '@/pages/Favorites';
 import { Settings } from '@/pages/Settings';
 import { More } from '@/pages/More';
 import { RecentConversions } from '@/pages/RecentConversions';
+import { About } from '@/pages/About';
+import { Contact } from '@/pages/Contact';
+import { Privacy } from '@/pages/Privacy';
+import { Terms } from '@/pages/Terms';
 import NotFound from '@/pages/not-found';
 import { registerServiceWorker } from '@/lib/pwa';
 import { useStatusBar } from './hooks/useStatusBar';
@@ -43,9 +47,36 @@ function AppRoutes() {
   };
 
   return (
-    <Layout>
-      {renderCurrentView()}
-    </Layout>
+    <Switch>
+      {/* Legal pages with direct URL access for AdSense compliance */}
+      <Route path="/about">
+        <Layout>
+          <About />
+        </Layout>
+      </Route>
+      <Route path="/contact">
+        <Layout>
+          <Contact />
+        </Layout>
+      </Route>
+      <Route path="/privacy">
+        <Layout>
+          <Privacy />
+        </Layout>
+      </Route>
+      <Route path="/terms">
+        <Layout>
+          <Terms />
+        </Layout>
+      </Route>
+      
+      {/* Main app with state-based navigation */}
+      <Route path="*">
+        <Layout>
+          {renderCurrentView()}
+        </Layout>
+      </Route>
+    </Switch>
   );
 }
 

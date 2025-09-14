@@ -3,6 +3,7 @@ import { useAppStore } from '@/stores/useAppStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AdSpace } from '@/components/AdSpace';
+import { Link } from 'wouter';
 import { 
   Calculator, 
   History, 
@@ -12,7 +13,11 @@ import {
   Star,
   ExternalLink,
   Coffee,
-  Mail
+  Mail,
+  Info,
+  FileText,
+  Shield,
+  Users
 } from 'lucide-react';
 
 export function More() {
@@ -73,6 +78,41 @@ export function More() {
       title: t('settings.share.title'),
       description: t('settings.share.text'),
       action: handleShareApp,
+      color: 'text-orange-500'
+    }
+  ];
+
+  const legalOptions = [
+    {
+      id: 'about',
+      icon: Info,
+      title: t('legal.about.title'),
+      description: language === 'en' ? 'Learn about ConvertScope and our mission' : 'Conoce ConvertScope y nuestra misión',
+      href: '/about',
+      color: 'text-blue-500'
+    },
+    {
+      id: 'contact',
+      icon: Users,
+      title: t('legal.contact.title'),
+      description: language === 'en' ? 'Get in touch with our team' : 'Ponte en contacto con nuestro equipo',
+      href: '/contact',
+      color: 'text-green-500'
+    },
+    {
+      id: 'privacy',
+      icon: Shield,
+      title: t('legal.privacy.title'),
+      description: language === 'en' ? 'How we protect your privacy' : 'Cómo protegemos tu privacidad',
+      href: '/privacy',
+      color: 'text-purple-500'
+    },
+    {
+      id: 'terms',
+      icon: FileText,
+      title: t('legal.terms.title'),
+      description: language === 'en' ? 'Terms and conditions of use' : 'Términos y condiciones de uso',
+      href: '/terms',
       color: 'text-orange-500'
     }
   ];
@@ -144,6 +184,39 @@ export function More() {
 
       {/* Ad Space */}
       <AdSpace />
+
+      {/* Legal Information Section */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          {language === 'en' ? 'Information & Legal' : 'Información y Legal'}
+        </h3>
+        <div className="space-y-3">
+          {legalOptions.map((option) => (
+            <Card key={option.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+              <CardContent className="p-4">
+                <Link 
+                  href={option.href}
+                  className="flex items-center justify-between w-full text-left"
+                  data-testid={`link-${option.id}`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <option.icon className={`text-xl ${option.color}`} />
+                    <div>
+                      <h4 className="font-medium text-gray-900 dark:text-white">
+                        {option.title}
+                      </h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {option.description}
+                      </p>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-gray-400" />
+                </Link>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
 
       {/* Support Section */}
       <div className="mb-6">
